@@ -172,7 +172,47 @@ function formatearFecha(f){
 }
 
 window.onload=cargarRegistros;
+  function registrarOperacion() {
+
+  const data = {
+    fecha: document.getElementById("fecha").value,
+    transportadora: document.getElementById("transportadora").value,
+    conductor: document.getElementById("conductor").value,
+    placa: document.getElementById("placa").value,
+    producto: document.getElementById("producto").value,
+    operacion: document.getElementById("operacion").value,
+    inicio: document.getElementById("inicio").value,
+    fin: document.getElementById("fin").value,
+    minutos: document.getElementById("minutos").value,
+    muelle: document.getElementById("muelle").value,
+    responsable: document.getElementById("responsable").value,
+    observaciones: document.getElementById("observaciones").value
+  };
+
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (res.ok) {
+      alert("Registro guardado correctamente ✅");
+      cargarRegistros();
+      document.getElementById("formRegistro").reset();
+    } else {
+      alert("Error: " + res.error);
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Error enviando datos ❌");
+  });
+}
 </script>
 
 </body>
 </html>
+
