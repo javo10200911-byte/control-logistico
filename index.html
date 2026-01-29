@@ -2,236 +2,86 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>🚛 Control Cargue y Descargue</title>
+  <title>🚛 Control Logístico</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f2f5f4;
+      background: #f4f6f8;
       margin: 0;
-      padding: 0;
-    }
-
-    header {
-      background: #ffffff;
-      padding: 15px;
-      text-align: center;
-      font-size: 22px;
-      font-weight: bold;
-      border-bottom: 1px solid #ddd;
-    }
-
-    .container {
-      width: 95%;
-      margin: 20px auto;
-      background: #ffffff;
       padding: 20px;
-      border-radius: 6px;
     }
 
-    .tabs {
-      display: flex;
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-
-    .tabs span {
-      cursor: pointer;
-      font-weight: bold;
-      color: #555;
-    }
-
-    .tabs .active {
-      color: #2ecc71;
-      border-bottom: 2px solid #2ecc71;
-      padding-bottom: 4px;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
-
-    input, select {
-      padding: 10px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-      width: 100%;
-    }
-
-    textarea {
-      grid-column: span 2;
-      padding: 10px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-    }
-
-    button {
-      background: #27ae60;
-      color: white;
-      padding: 10px 18px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-      margin-top: 10px;
-    }
-
-    button:hover {
-      background: #219150;
-    }
-
-    .filters {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
-      margin-top: 20px;
+    h2 {
+      margin-bottom: 15px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 15px;
+      background: #fff;
+    }
+
+    thead {
+      background: #2c3e50;
+      color: #fff;
+    }
+
+    th, td {
+      padding: 8px 10px;
+      border: 1px solid #ddd;
+      text-align: center;
       font-size: 14px;
     }
 
-    th {
-      background: #2c3e50;
-      color: white;
-      padding: 8px;
+    tbody tr:nth-child(even) {
+      background: #f2f2f2;
     }
 
-    td {
-      padding: 8px;
-      border-bottom: 1px solid #ddd;
-      text-align: center;
+    .contenedor {
+      background: #fff;
+      padding: 15px;
+      border-radius: 6px;
+      box-shadow: 0 2px 5px rgba(0,0,0,.1);
     }
   </style>
 </head>
 
 <body>
 
-<header>
-  🚛 CONTROL CARGUE Y DESCARGUE
-</header>
+  <div class="contenedor">
+    <h2>📋 Registros de Cargue y Descargue</h2>
 
-<div class="container">
-
-  <div class="tabs">
-    <span class="active">📋 Registros</span>
-    <span>📊 Dashboard</span>
-    <span>📑 Reportes</span>
+    <table id="tablaRegistros">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Fecha</th>
+          <th>Transportadora</th>
+          <th>Conductor</th>
+          <th>Placa</th>
+          <th>Producto</th>
+          <th>Operación</th>
+          <th>Inicio</th>
+          <th>Fin</th>
+          <th>Minutos</th>
+          <th>Muelle</th>
+          <th>Responsable</th>
+          <th>Observaciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Registros dinámicos -->
+      </tbody>
+    </table>
   </div>
 
-  <!-- FORMULARIO -->
-  <div class="form-grid">
-    <input id="transportadora" placeholder="Transportadora">
-    <input id="conductor" placeholder="Conductor">
-    <input id="placa" placeholder="Placa">
-    <input id="producto" placeholder="Producto">
-
-    <select id="operacion">
-      <option value="">Operación</option>
-      <option value="Cargue">Cargue</option>
-      <option value="Descargue">Descargue</option>
-    </select>
-
-    <input id="fecha" type="date">
-    <input id="inicio" type="time">
-    <input id="fin" type="time">
-    <input id="muelle" placeholder="Muelle">
-    <input id="responsable" placeholder="Responsable">
-
-    <textarea id="observaciones" placeholder="Observaciones (Opcional)"></textarea>
-  </div>
-
- <button type="button" onclick="registrar()">Registrar</button>
-
-
-  <!-- FILTROS -->
-  <div class="filters">
-    <input type="date">
-    <input placeholder="Transportadora">
-    <input placeholder="Placa">
-    <input placeholder="Producto">
-    <button>Filtrar</button>
-  </div>
-
-  <!-- TABLA -->
-  <table>
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Fecha</th>
-        <th>Transportadora</th>
-        <th>Conductor</th>
-        <th>Placa</th>
-        <th>Producto</th>
-        <th>Operación</th>
-        <th>Inicio</th>
-        <th>Fin</th>
-        <th>Minutos</th>
-        <th>Muelle</th>
-        <th>Responsable</th>
-        <th>Observaciones</th>
-      </tr>
-    </thead>
-    <tbody id="tabla"></tbody>
-  </table>
-
-</div>
 <script>
-function registrar() {
+/* 🔴 PEGA AQUÍ TU URL DE APPS SCRIPT */
+const URL_API = "https://script.google.com/macros/s/XXXXXXXXXXXX/exec";
 
-  const inicio = document.getElementById("inicio").value;
-  const fin = document.getElementById("fin").value;
-
-  let minutos = "";
-  if (inicio && fin) {
-    const i = new Date(`1970-01-01T${inicio}`);
-    const f = new Date(`1970-01-01T${fin}`);
-    minutos = Math.round((f - i) / 60000);
-  }
-
-  const formData = new URLSearchParams({
-    fecha: document.getElementById("fecha").value,
-    transportadora: document.getElementById("transportadora").value,
-    conductor: document.getElementById("conductor").value,
-    placa: document.getElementById("placa").value,
-    producto: document.getElementById("producto").value,
-    operacion: document.getElementById("operacion").value,
-    inicio,
-    fin,
-    minutos,
-    muelle: document.getElementById("muelle").value,
-    responsable: document.getElementById("responsable").value,
-    observaciones: document.getElementById("observaciones").value
-  });
-
-  fetch(URL_SCRIPT, {
-    method: "POST",
-    body: formData
-  })
-  .then(res => res.json())
-  .then(resp => {
-    if (resp.ok) {
-      alert("Registro guardado correctamente ✅");
-      cargarRegistros(); // Refrescar la tabla después de registrar
-    } else {
-      alert("Error: " + resp.error);
-    }
-  })
-  .catch(() => alert("Error enviando datos ❌"));
-}
-function formatearFecha(fechaISO) {
-  if (!fechaISO) return "";
-  const f = new Date(fechaISO);
-  return f.toLocaleDateString("es-CO");
-}
-const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbyOnRWZxaZq7ekI_FCIIKulICD3QwZsqZENxX5lC_OWfAL2pYoT2KtR6-6j_Wm7Rp4DmQ/exec";
-
+/* 📥 Cargar registros */
 async function cargarRegistros() {
   try {
     const res = await fetch(URL_API);
@@ -262,23 +112,22 @@ async function cargarRegistros() {
       tbody.appendChild(tr);
     });
 
-  } catch (e) {
-    alert("Error cargando registros");
-    console.error(e);
+  } catch (error) {
+    console.error(error);
+    alert("❌ Error cargando los registros");
   }
 }
 
+/* 📅 Formatear fecha */
+function formatearFecha(fechaISO) {
+  if (!fechaISO) return "";
+  const f = new Date(fechaISO);
+  return f.toLocaleDateString("es-CO");
+}
 
-document.addEventListener("DOMContentLoaded", cargarRegistros);
-  
-</script>
-
-
-// cargar al abrir la página
+/* 🚀 Cargar al abrir */
 window.onload = cargarRegistros;
 </script>
 
-
 </body>
 </html>
-
