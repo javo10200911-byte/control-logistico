@@ -1,197 +1,194 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🚛 Registros de Cargue y Descargue</title>
+  <meta charset="UTF-8">
+  <title>🚛 Registros de Cargue y Descargue</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<style>
-body{
-  font-family: Arial, sans-serif;
-  background:#f4f6f8;
-  padding:20px;
-}
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 20px;
+    }
 
-h1{
-  margin-bottom:15px;
-}
+    h2 {
+      margin-bottom: 10px;
+    }
 
-.card{
-  background:#fff;
-  padding:15px;
-  border-radius:8px;
-  box-shadow:0 2px 8px rgba(0,0,0,.1);
-  margin-bottom:20px;
-}
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,.1);
+    }
 
-form{
-  display:grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap:10px;
-}
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px;
+    }
 
-input, select, textarea, button{
-  padding:8px;
-  border-radius:5px;
-  border:1px solid #ccc;
-  font-size:14px;
-}
+    input, select, textarea, button {
+      padding: 8px;
+      font-size: 14px;
+      width: 100%;
+    }
 
-textarea{
-  grid-column:1 / -1;
-}
+    textarea {
+      resize: vertical;
+    }
 
-button{
-  background:#0d6efd;
-  color:#fff;
-  border:none;
-  cursor:pointer;
-}
+    button {
+      background: #2ecc71;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
 
-button:hover{
-  background:#084298;
-}
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
 
-table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:10px;
-}
+    th {
+      background: #2c3e50;
+      color: white;
+      padding: 8px;
+    }
 
-th, td{
-  border:1px solid #ddd;
-  padding:6px;
-  font-size:13px;
-  text-align:center;
-}
-
-th{
-  background:#2c3e50;
-  color:#fff;
-}
-</style>
+    td {
+      padding: 6px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
+  </style>
 </head>
-
 <body>
 
-<h1>📋 Registros de Cargue y Descargue</h1>
-
+<!-- ================= REGISTRO ================= -->
 <div class="card">
-<form id="formRegistro">
+  <h2>📝 Registrar operación</h2>
 
-  <input type="date" name="fecha" required>
+  <div class="grid">
+    <input id="transportadora" placeholder="Transportadora">
+    <input id="conductor" placeholder="Conductor">
+    <input id="placa" placeholder="Placa">
+    <input id="producto" placeholder="Producto">
 
-  <input name="transportadora" placeholder="Transportadora" required>
-  <input name="conductor" placeholder="Conductor" required>
-  <input name="placa" placeholder="Placa" required>
-  <input name="producto" placeholder="Producto" required>
+    <select id="operacion">
+      <option value="">Operación</option>
+      <option value="Cargue">Cargue</option>
+      <option value="Descargue">Descargue</option>
+    </select>
 
-  <select name="operacion" required>
-    <option value="">Operación</option>
-    <option>Cargue</option>
-    <option>Descargue</option>
-  </select>
+    <input id="inicio" type="time">
+    <input id="fin" type="time">
+    <input id="minutos" placeholder="Tiempo (ej: 2 hh)">
+    <input id="muelle" placeholder="Muelle">
+    <input id="responsable" placeholder="Responsable">
+  </div>
 
-  <input type="time" name="inicio" required>
-  <input type="time" name="fin" required>
+  <br>
+  <textarea id="observaciones" placeholder="Observaciones"></textarea>
+  <br><br>
 
-  <input name="minutos" placeholder="Duración (ej: 2 hh 05 mm)">
-  <input name="muelle" placeholder="Muelle">
-  <input name="responsable" placeholder="Responsable">
-
-  <textarea name="observaciones" placeholder="Observaciones"></textarea>
-
-  <button type="submit">💾 Registrar</button>
-
-</form>
+  <button onclick="registrar()">Registrar</button>
 </div>
 
+<!-- ================= TABLA ================= -->
 <div class="card">
-<table>
-<thead>
-<tr>
-  <th>#</th>
-  <th>Fecha</th>
-  <th>Transportadora</th>
-  <th>Conductor</th>
-  <th>Placa</th>
-  <th>Producto</th>
-  <th>Operación</th>
-  <th>Inicio</th>
-  <th>Fin</th>
-  <th>Minutos</th>
-  <th>Muelle</th>
-  <th>Responsable</th>
-  <th>Observaciones</th>
-</tr>
-</thead>
-<tbody id="tablaBody"></tbody>
-</table>
+  <h2>📋 Registros</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Fecha</th>
+        <th>Transportadora</th>
+        <th>Conductor</th>
+        <th>Placa</th>
+        <th>Producto</th>
+        <th>Operación</th>
+        <th>Inicio</th>
+        <th>Fin</th>
+        <th>Minutos</th>
+        <th>Muelle</th>
+        <th>Responsable</th>
+        <th>Observaciones</th>
+      </tr>
+    </thead>
+    <tbody id="tabla"></tbody>
+  </table>
 </div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbyOnRWZxaZq7ekI_FCIIKulICD3QwZsqZENxX5lC_OWfAL2pYoT2KtR6-6j_Wm7Rp4DmQ/exec"; // 👈 PEGA AQUÍ TU URL
+const API_URL = "https://script.google.com/macros/s/AKfycbxn-v6Tc9bI-_QHAcRO6yTvGjHdnqG7vIt1neQ8LEmIlyEgtQbdcAe7_vCibeJjojPbYw/exec";
 
-document.getElementById("formRegistro").addEventListener("submit", e => {
-  e.preventDefault();
-
-  const formData = new FormData(e.target);
-  const data = Object.fromEntries(formData.entries());
+// -------- REGISTRAR --------
+function registrar() {
+  const data = {
+    transportadora: document.getElementById("transportadora").value,
+    conductor: document.getElementById("conductor").value,
+    placa: document.getElementById("placa").value,
+    producto: document.getElementById("producto").value,
+    operacion: document.getElementById("operacion").value,
+    inicio: document.getElementById("inicio").value,
+    fin: document.getElementById("fin").value,
+    minutos: document.getElementById("minutos").value,
+    muelle: document.getElementById("muelle").value,
+    responsable: document.getElementById("responsable").value,
+    observaciones: document.getElementById("observaciones").value
+  };
 
   fetch(API_URL, {
     method: "POST",
-    headers: { "Content-Type":"application/json" },
     body: JSON.stringify(data)
   })
   .then(r => r.json())
-  .then(res => {
-    if(res.ok){
-      alert("Registro guardado ✅");
-      e.target.reset();
-      cargarRegistros();
-    }else{
-      alert("Error al guardar");
-    }
+  .then(() => {
+    cargarRegistros();
+    alert("Registro guardado correctamente");
   })
-  .catch(err => {
-    console.error(err);
-    alert("Error de conexión");
-  });
-});
+  .catch(() => alert("Error de conexión"));
+}
 
-function cargarRegistros(){
+// -------- CARGAR REGISTROS --------
+function cargarRegistros() {
   fetch(API_URL)
     .then(r => r.json())
     .then(data => {
-      const tbody = document.getElementById("tablaBody");
+      const tbody = document.getElementById("tabla");
       tbody.innerHTML = "";
 
       data.forEach((r, i) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${i+1}</td>
-          <td>${r.Fecha || ""}</td>
-          <td>${r.Transportadora || ""}</td>
-          <td>${r.Conductor || ""}</td>
-          <td>${r.Placa || ""}</td>
-          <td>${r.Producto || ""}</td>
-          <td>${r.Operación || r.Operacion || ""}</td>
-          <td>${r.Inicio || ""}</td>
-          <td>${r.Fin || ""}</td>
-          <td>${r.Minutos || ""}</td>
-          <td>${r.Muelle || ""}</td>
-          <td>${r.Responsable || ""}</td>
-          <td>${r.Observaciones || ""}</td>
+        tbody.innerHTML += `
+          <tr>
+            <td>${i + 1}</td>
+            <td>${r.Fecha || ""}</td>
+            <td>${r.Transportadora || ""}</td>
+            <td>${r.Conductor || ""}</td>
+            <td>${r.Placa || ""}</td>
+            <td>${r.Producto || ""}</td>
+            <td>${r.Operacion || ""}</td>
+            <td>${r.Inicio || ""}</td>
+            <td>${r.Fin || ""}</td>
+            <td>${r.Minutos || ""}</td>
+            <td>${r.Muelle || ""}</td>
+            <td>${r.Responsable || ""}</td>
+            <td>${r.Observaciones || ""}</td>
+          </tr>
         `;
-        tbody.appendChild(tr);
       });
     });
 }
 
-cargarRegistros();
+window.onload = cargarRegistros;
 </script>
 
 </body>
 </html>
-
-
