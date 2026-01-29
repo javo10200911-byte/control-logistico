@@ -9,12 +9,7 @@
     body {
       font-family: Arial, sans-serif;
       background: #f4f6f8;
-      margin: 0;
       padding: 20px;
-    }
-
-    h2 {
-      margin-bottom: 10px;
     }
 
     .card {
@@ -24,6 +19,8 @@
       margin-bottom: 20px;
       box-shadow: 0 2px 6px rgba(0,0,0,.1);
     }
+
+    h2 { margin-bottom: 10px; }
 
     .grid {
       display: grid;
@@ -37,16 +34,14 @@
       width: 100%;
     }
 
-    textarea {
-      resize: vertical;
-    }
+    textarea { resize: vertical; }
 
     button {
       background: #2ecc71;
       color: #fff;
       border: none;
-      cursor: pointer;
       font-size: 16px;
+      cursor: pointer;
     }
 
     table {
@@ -75,6 +70,7 @@
   <h2>📝 Registrar operación</h2>
 
   <div class="grid">
+    <input id="fecha" type="date">
     <input id="transportadora" placeholder="Transportadora">
     <input id="conductor" placeholder="Conductor">
     <input id="placa" placeholder="Placa">
@@ -86,9 +82,10 @@
       <option value="Descargue">Descargue</option>
     </select>
 
-    <input id="inicio" type="time">
-    <input id="fin" type="time">
-    <input id="minutos" placeholder="Tiempo (ej: 2 hh)">
+    <input id="inicio" type="time" onchange="calcularTiempo()">
+    <input id="fin" type="time" onchange="calcularTiempo()">
+
+    <input id="minutos" placeholder="Tiempo calculado" readonly>
     <input id="muelle" placeholder="Muelle">
     <input id="responsable" placeholder="Responsable">
   </div>
@@ -129,20 +126,49 @@
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbxn-v6Tc9bI-_QHAcRO6yTvGjHdnqG7vIt1neQ8LEmIlyEgtQbdcAe7_vCibeJjojPbYw/exec";
 
+// -------- CALCULAR TIEMPO --------
+function calcularTiempo() {
+  const inicio = document.getElementById("inicio").value;
+  const fin = document.getElementById("fin").value;
+  if (!inicio || !fin) return;
+
+  const [hi, mi] = inicio.split(":").map(Number);
+  const [hf, mf] = fin.split(":").map(Number);
+
+  let inicioSeg = hi * 3600 + mi * 60;
+  let finSeg = hf * 3600 + mf * 60;
+
+  if (finSeg < inicioSeg) return;
+
+  let diff = finSeg - inicioSeg;
+
+  const h = Math.floor(diff / 3600);
+  diff %= 3600;
+  const m = Math.floor(diff / 60);
+  const s = diff % 60;
+
+  document.getElementById("minutos").value =
+    `${h} hh ${m.toString().padStart(2,"0")} mm ${s.toString().padStart(2,"0")} ss`;
+}
+
 // -------- REGISTRAR --------
 function registrar() {
+  const fechaInput = document.getElementById("fecha").value;
+  const fecha = fechaInput ? fechaInput : new Date().toISOString().split("T")[0];
+
   const data = {
-    transportadora: document.getElementById("transportadora").value,
-    conductor: document.getElementById("conductor").value,
-    placa: document.getElementById("placa").value,
-    producto: document.getElementById("producto").value,
-    operacion: document.getElementById("operacion").value,
-    inicio: document.getElementById("inicio").value,
-    fin: document.getElementById("fin").value,
-    minutos: document.getElementById("minutos").value,
-    muelle: document.getElementById("muelle").value,
-    responsable: document.getElementById("responsable").value,
-    observaciones: document.getElementById("observaciones").value
+    fecha,
+    transportadora: transportadora.value,
+    conductor: conductor.value,
+    placa: placa.value,
+    producto: producto.value,
+    operacion: operacion.value,
+    inicio: inicio.value,
+    fin: fin.value,
+    minutos: minutos.value,
+    muelle: muelle.value,
+    responsable: responsable.value,
+    observaciones: observaciones.value
   };
 
   fetch(API_URL, {
@@ -151,10 +177,16 @@ function registrar() {
   })
   .then(r => r.json())
   .then(() => {
+    limpiarFormulario();
     cargarRegistros();
     alert("Registro guardado correctamente");
   })
   .catch(() => alert("Error de conexión"));
+}
+
+// -------- LIMPIAR FORMULARIO --------
+function limpiarFormulario() {
+  document.querySelectorAll("input, textarea, select").forEach(e => e.value = "");
 }
 
 // -------- CARGAR REGISTROS --------
@@ -168,7 +200,7 @@ function cargarRegistros() {
       data.forEach((r, i) => {
         tbody.innerHTML += `
           <tr>
-            <td>${i + 1}</td>
+            <td>${i+1}</td>
             <td>${r.Fecha || ""}</td>
             <td>${r.Transportadora || ""}</td>
             <td>${r.Conductor || ""}</td>
@@ -181,8 +213,7 @@ function cargarRegistros() {
             <td>${r.Muelle || ""}</td>
             <td>${r.Responsable || ""}</td>
             <td>${r.Observaciones || ""}</td>
-          </tr>
-        `;
+          </tr>`;
       });
     });
 }
