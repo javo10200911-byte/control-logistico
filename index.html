@@ -232,19 +232,11 @@ function cargarRegistros() {
   fetch(URL_SCRIPT)
     .then(res => res.json())
     .then(data => {
-      console.log("Datos recibidos:", data);
-
       const tabla = document.getElementById("tabla");
       tabla.innerHTML = "";
 
-      if (!data.length) {
-        tabla.innerHTML = `<tr><td colspan="13">No hay registros</td></tr>`;
-        return;
-      }
-
       data.forEach((r, i) => {
         const tr = document.createElement("tr");
-
         tr.innerHTML = `
           <td>${i + 1}</td>
           <td>${r.Fecha || ""}</td>
@@ -260,19 +252,14 @@ function cargarRegistros() {
           <td>${r.Responsable || ""}</td>
           <td>${r.Observaciones || ""}</td>
         `;
-
         tabla.appendChild(tr);
       });
     })
-    .catch(err => {
-      console.error("Error cargando registros:", err);
-    });
+    .catch(err => console.error("Error:", err));
 }
 
 document.addEventListener("DOMContentLoaded", cargarRegistros);
 </script>
 
-
 </body>
 </html>
-
