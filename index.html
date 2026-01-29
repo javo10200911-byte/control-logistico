@@ -208,8 +208,15 @@ function cargarRegistros() {
             <td>${r.Producto || ""}</td>
             <td>${r.Operacion || ""}</td>
             <td>${r.Inicio || ""}</td>
-            <td>${r.Fin || ""}</td>
-            <td>${r.Minutos || ""}</td>
+          <td>
+  <input type="time"
+         value="${r.Fin || ""}"
+         onchange="actualizarFin(${i}, this.value)">
+</td>
+
+<td id="min-${i}">
+  ${r.Minutos || ""}
+</td>
             <td>${r.Muelle || ""}</td>
             <td>${r.Responsable || ""}</td>
             <td>${r.Observaciones || ""}</td>
@@ -217,9 +224,55 @@ function cargarRegistros() {
       });
     });
 }
+  function actualizarFin(index, nuevoFin) {
+  fetch(API_URL)
+    .then(r => r.json())
+    .then(data => {
+
+      const registro = data[index];
+      if (!registro || !registro.Inicio) return;
+
+      const inicio = registro.Inicio;
+
+      // calcular tiempo
+      const [hi, mi] = inicio.split(":").map(Number);
+      const [hf, mf] = nuevoFin.split(":").map(Number);
+
+      let iniSeg = hi * 3600 + mi * 60;
+      let finSeg = hf * 3600 + mf * 60;
+
+      if (finSeg < iniSeg) {
+        alert("La hora fin no puede ser menor a inicio");
+        return;
+      }
+
+      let diff = finSeg - iniSeg;
+      const h = Math.floor(diff / 3600);
+      diff %= 3600;
+      const m = Math.floor(diff / 60);
+      const s = diff % 60;
+
+      const tiempo = `${h} hh ${m.toString().padStart(2,"0")} mm ${s.toString().padStart(2,"0")} ss`;
+
+      // actualizar visual
+      document.getElementById(`min-${index}`).innerText = tiempo;
+
+      // enviar actualización al backend
+      fetch(API_URL, {
+        method: "PUT",
+        body: JSON.stringify({
+          index,
+          fin: nuevoFin,
+          minutos: tiempo
+        })
+      });
+    });
+}
+
 
 window.onload = cargarRegistros;
 </script>
 
 </body>
 </html>
+
