@@ -1,134 +1,178 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>🚛 Control Logístico</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<title>🚛 Control Cargue y Descargue</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
-      margin: 0;
-      padding: 20px;
-    }
+<style>
+body{
+  font-family: Arial, sans-serif;
+  background:#f4f6f8;
+  margin:0;
+  padding:20px;
+}
+h2{margin:15px 0}
+.contenedor{
+  background:#fff;
+  padding:15px;
+  border-radius:6px;
+  box-shadow:0 2px 6px rgba(0,0,0,.1);
+  margin-bottom:20px;
+}
+input, select, textarea, button{
+  width:100%;
+  padding:8px;
+  margin:5px 0;
+  font-size:14px;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:10px;
+}
+button{
+  background:#28a745;
+  color:#fff;
+  border:none;
+  cursor:pointer;
+  border-radius:4px;
+}
+button:hover{opacity:.9}
 
-    h2 {
-      margin-bottom: 15px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #fff;
-    }
-
-    thead {
-      background: #2c3e50;
-      color: #fff;
-    }
-
-    th, td {
-      padding: 8px 10px;
-      border: 1px solid #ddd;
-      text-align: center;
-      font-size: 14px;
-    }
-
-    tbody tr:nth-child(even) {
-      background: #f2f2f2;
-    }
-
-    .contenedor {
-      background: #fff;
-      padding: 15px;
-      border-radius: 6px;
-      box-shadow: 0 2px 5px rgba(0,0,0,.1);
-    }
-  </style>
+table{
+  width:100%;
+  border-collapse:collapse;
+  background:#fff;
+}
+thead{
+  background:#2c3e50;
+  color:#fff;
+}
+th,td{
+  padding:8px;
+  border:1px solid #ddd;
+  text-align:center;
+  font-size:14px;
+}
+tbody tr:nth-child(even){background:#f2f2f2}
+</style>
 </head>
 
 <body>
 
-  <div class="contenedor">
-    <h2>📋 Registros de Cargue y Descargue</h2>
+<!-- 🔹 FORMULARIO -->
+<div class="contenedor">
+  <h2>📝 Registrar operación</h2>
 
-    <table id="tablaRegistros">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Fecha</th>
-          <th>Transportadora</th>
-          <th>Conductor</th>
-          <th>Placa</th>
-          <th>Producto</th>
-          <th>Operación</th>
-          <th>Inicio</th>
-          <th>Fin</th>
-          <th>Minutos</th>
-          <th>Muelle</th>
-          <th>Responsable</th>
-          <th>Observaciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Registros dinámicos -->
-      </tbody>
-    </table>
-  </div>
+  <form id="formRegistro">
+    <div class="grid">
+      <input name="Fecha" type="date" required>
+      <input name="Transportadora" placeholder="Transportadora" required>
+      <input name="Conductor" placeholder="Conductor" required>
+      <input name="Placa" placeholder="Placa" required>
+      <input name="Producto" placeholder="Producto" required>
+
+      <select name="Operacion" required>
+        <option value="">Operación</option>
+        <option>Cargue</option>
+        <option>Descargue</option>
+      </select>
+
+      <input name="Inicio" type="time" required>
+      <input name="Fin" type="time" required>
+      <input name="Minutos" placeholder="Minutos / Tiempo">
+      <input name="Muelle" placeholder="Muelle">
+      <input name="Responsable" placeholder="Responsable">
+    </div>
+
+    <textarea name="Observaciones" placeholder="Observaciones"></textarea>
+
+    <button type="submit">Registrar</button>
+  </form>
+</div>
+
+<!-- 🔹 TABLA -->
+<div class="contenedor">
+  <h2>📋 Registros</h2>
+
+  <table id="tablaRegistros">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Fecha</th>
+        <th>Transportadora</th>
+        <th>Conductor</th>
+        <th>Placa</th>
+        <th>Producto</th>
+        <th>Operación</th>
+        <th>Inicio</th>
+        <th>Fin</th>
+        <th>Minutos</th>
+        <th>Muelle</th>
+        <th>Responsable</th>
+        <th>Observaciones</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
 
 <script>
-/* 🔴 PEGA AQUÍ TU URL DE APPS SCRIPT */
+/* 🔴 CAMBIA ESTA URL */
 const URL_API = "https://script.google.com/macros/s/AKfycbyOnRWZxaZq7ekI_FCIIKulICD3QwZsqZENxX5lC_OWfAL2pYoT2KtR6-6j_Wm7Rp4DmQ/exec";
 
+/* 📤 Enviar registro */
+document.getElementById("formRegistro").addEventListener("submit", async e=>{
+  e.preventDefault();
+  const form = e.target;
+  const data = Object.fromEntries(new FormData(form));
+
+  await fetch(URL_API,{
+    method:"POST",
+    body:JSON.stringify(data)
+  });
+
+  alert("✅ Registro guardado");
+  form.reset();
+  cargarRegistros();
+});
+
 /* 📥 Cargar registros */
-async function cargarRegistros() {
-  try {
-    const res = await fetch(URL_API);
-    const data = await res.json();
+async function cargarRegistros(){
+  const res = await fetch(URL_API);
+  const data = await res.json();
+  const tbody = document.querySelector("#tablaRegistros tbody");
+  tbody.innerHTML="";
 
-    const tbody = document.querySelector("#tablaRegistros tbody");
-    tbody.innerHTML = "";
-
-    data.forEach((r, i) => {
-      const tr = document.createElement("tr");
-
-      tr.innerHTML = `
-        <td>${i + 1}</td>
-        <td>${formatearFecha(r.Fecha)}</td>
-        <td>${r.Transportadora || ""}</td>
-        <td>${r.Conductor || ""}</td>
-        <td>${r.Placa || ""}</td>
-        <td>${r.Producto || ""}</td>
-        <td>${r.Operacion || ""}</td>
-        <td>${r.Inicio || ""}</td>
-        <td>${r.Fin || ""}</td>
-        <td>${r.Minutos || ""}</td>
-        <td>${r.Muelle || ""}</td>
-        <td>${r.Responsable || ""}</td>
-        <td>${r.Observaciones || ""}</td>
-      `;
-
-      tbody.appendChild(tr);
-    });
-
-  } catch (error) {
-    console.error(error);
-    alert("❌ Error cargando los registros");
-  }
+  data.forEach((r,i)=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td>${i+1}</td>
+      <td>${formatearFecha(r.Fecha)}</td>
+      <td>${r.Transportadora||""}</td>
+      <td>${r.Conductor||""}</td>
+      <td>${r.Placa||""}</td>
+      <td>${r.Producto||""}</td>
+      <td>${r.Operacion||""}</td>
+      <td>${r.Inicio||""}</td>
+      <td>${r.Fin||""}</td>
+      <td>${r.Minutos||""}</td>
+      <td>${r.Muelle||""}</td>
+      <td>${r.Responsable||""}</td>
+      <td>${r.Observaciones||""}</td>
+    `;
+    tbody.appendChild(tr);
+  });
 }
 
-/* 📅 Formatear fecha */
-function formatearFecha(fechaISO) {
-  if (!fechaISO) return "";
-  const f = new Date(fechaISO);
-  return f.toLocaleDateString("es-CO");
+function formatearFecha(f){
+  if(!f) return "";
+  return new Date(f).toLocaleDateString("es-CO");
 }
 
-/* 🚀 Cargar al abrir */
-window.onload = cargarRegistros;
+window.onload=cargarRegistros;
 </script>
 
 </body>
 </html>
-
