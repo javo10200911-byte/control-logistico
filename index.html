@@ -2,217 +2,194 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>🚛 Control Cargue y Descargue</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🚛 Registros de Cargue y Descargue</title>
 
 <style>
 body{
   font-family: Arial, sans-serif;
   background:#f4f6f8;
-  margin:0;
   padding:20px;
 }
-h2{margin:15px 0}
-.contenedor{
+
+h1{
+  margin-bottom:15px;
+}
+
+.card{
   background:#fff;
   padding:15px;
-  border-radius:6px;
-  box-shadow:0 2px 6px rgba(0,0,0,.1);
+  border-radius:8px;
+  box-shadow:0 2px 8px rgba(0,0,0,.1);
   margin-bottom:20px;
 }
-input, select, textarea, button{
-  width:100%;
-  padding:8px;
-  margin:5px 0;
-  font-size:14px;
-}
-.grid{
+
+form{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap:10px;
 }
+
+input, select, textarea, button{
+  padding:8px;
+  border-radius:5px;
+  border:1px solid #ccc;
+  font-size:14px;
+}
+
+textarea{
+  grid-column:1 / -1;
+}
+
 button{
-  background:#28a745;
+  background:#0d6efd;
   color:#fff;
   border:none;
   cursor:pointer;
-  border-radius:4px;
 }
-button:hover{opacity:.9}
+
+button:hover{
+  background:#084298;
+}
 
 table{
   width:100%;
   border-collapse:collapse;
-  background:#fff;
+  margin-top:10px;
 }
-thead{
+
+th, td{
+  border:1px solid #ddd;
+  padding:6px;
+  font-size:13px;
+  text-align:center;
+}
+
+th{
   background:#2c3e50;
   color:#fff;
 }
-th,td{
-  padding:8px;
-  border:1px solid #ddd;
-  text-align:center;
-  font-size:14px;
-}
-tbody tr:nth-child(even){background:#f2f2f2}
 </style>
 </head>
 
 <body>
 
-<!-- 🔹 FORMULARIO -->
-<div class="contenedor">
-  <h2>📝 Registrar operación</h2>
+<h1>📋 Registros de Cargue y Descargue</h1>
 
-  <form id="formRegistro">
-    <div class="grid">
-      <input name="Fecha" type="date" required>
-      <input name="Transportadora" placeholder="Transportadora" required>
-      <input name="Conductor" placeholder="Conductor" required>
-      <input name="Placa" placeholder="Placa" required>
-      <input name="Producto" placeholder="Producto" required>
+<div class="card">
+<form id="formRegistro">
 
-      <select name="Operacion" required>
-        <option value="">Operación</option>
-        <option>Cargue</option>
-        <option>Descargue</option>
-      </select>
+  <input type="date" name="fecha" required>
 
-      <input name="Inicio" type="time" required>
-      <input name="Fin" type="time" required>
-      <input name="Minutos" placeholder="Minutos / Tiempo">
-      <input name="Muelle" placeholder="Muelle">
-      <input name="Responsable" placeholder="Responsable">
-    </div>
+  <input name="transportadora" placeholder="Transportadora" required>
+  <input name="conductor" placeholder="Conductor" required>
+  <input name="placa" placeholder="Placa" required>
+  <input name="producto" placeholder="Producto" required>
 
-    <textarea name="Observaciones" placeholder="Observaciones"></textarea>
+  <select name="operacion" required>
+    <option value="">Operación</option>
+    <option>Cargue</option>
+    <option>Descargue</option>
+  </select>
 
-    <button type="submit">Registrar</button>
-  </form>
+  <input type="time" name="inicio" required>
+  <input type="time" name="fin" required>
+
+  <input name="minutos" placeholder="Duración (ej: 2 hh 05 mm)">
+  <input name="muelle" placeholder="Muelle">
+  <input name="responsable" placeholder="Responsable">
+
+  <textarea name="observaciones" placeholder="Observaciones"></textarea>
+
+  <button type="submit">💾 Registrar</button>
+
+</form>
 </div>
 
-<!-- 🔹 TABLA -->
-<div class="contenedor">
-  <h2>📋 Registros</h2>
-
-  <table id="tablaRegistros">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Fecha</th>
-        <th>Transportadora</th>
-        <th>Conductor</th>
-        <th>Placa</th>
-        <th>Producto</th>
-        <th>Operación</th>
-        <th>Inicio</th>
-        <th>Fin</th>
-        <th>Minutos</th>
-        <th>Muelle</th>
-        <th>Responsable</th>
-        <th>Observaciones</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+<div class="card">
+<table>
+<thead>
+<tr>
+  <th>#</th>
+  <th>Fecha</th>
+  <th>Transportadora</th>
+  <th>Conductor</th>
+  <th>Placa</th>
+  <th>Producto</th>
+  <th>Operación</th>
+  <th>Inicio</th>
+  <th>Fin</th>
+  <th>Minutos</th>
+  <th>Muelle</th>
+  <th>Responsable</th>
+  <th>Observaciones</th>
+</tr>
+</thead>
+<tbody id="tablaBody"></tbody>
+</table>
 </div>
 
 <script>
-/* 🔴 CAMBIA ESTA URL */
-const URL_API = "https://script.google.com/macros/s/AKfycbyOnRWZxaZq7ekI_FCIIKulICD3QwZsqZENxX5lC_OWfAL2pYoT2KtR6-6j_Wm7Rp4DmQ/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyOnRWZxaZq7ekI_FCIIKulICD3QwZsqZENxX5lC_OWfAL2pYoT2KtR6-6j_Wm7Rp4DmQ/exec"; // 👈 PEGA AQUÍ TU URL
 
-/* 📤 Enviar registro */
-document.getElementById("formRegistro").addEventListener("submit", async e=>{
+document.getElementById("formRegistro").addEventListener("submit", e => {
   e.preventDefault();
-  const form = e.target;
-  const data = Object.fromEntries(new FormData(form));
 
-  await fetch(URL_API,{
-    method:"POST",
-    body:JSON.stringify(data)
-  });
-
-  alert("✅ Registro guardado");
-  form.reset();
-  cargarRegistros();
-});
-
-/* 📥 Cargar registros */
-async function cargarRegistros(){
-  const res = await fetch(URL_API);
-  const data = await res.json();
-  const tbody = document.querySelector("#tablaRegistros tbody");
-  tbody.innerHTML="";
-
-  data.forEach((r,i)=>{
-    const tr=document.createElement("tr");
-    tr.innerHTML=`
-      <td>${i+1}</td>
-      <td>${formatearFecha(r.Fecha)}</td>
-      <td>${r.Transportadora||""}</td>
-      <td>${r.Conductor||""}</td>
-      <td>${r.Placa||""}</td>
-      <td>${r.Producto||""}</td>
-      <td>${r.Operacion||""}</td>
-      <td>${r.Inicio||""}</td>
-      <td>${r.Fin||""}</td>
-      <td>${r.Minutos||""}</td>
-      <td>${r.Muelle||""}</td>
-      <td>${r.Responsable||""}</td>
-      <td>${r.Observaciones||""}</td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
-
-function formatearFecha(f){
-  if(!f) return "";
-  return new Date(f).toLocaleDateString("es-CO");
-}
-
-window.onload=cargarRegistros;
-  function registrarOperacion() {
-
-  const data = {
-    fecha: document.getElementById("fecha").value,
-    transportadora: document.getElementById("transportadora").value,
-    conductor: document.getElementById("conductor").value,
-    placa: document.getElementById("placa").value,
-    producto: document.getElementById("producto").value,
-    operacion: document.getElementById("operacion").value,
-    inicio: document.getElementById("inicio").value,
-    fin: document.getElementById("fin").value,
-    minutos: document.getElementById("minutos").value,
-    muelle: document.getElementById("muelle").value,
-    responsable: document.getElementById("responsable").value,
-    observaciones: document.getElementById("observaciones").value
-  };
+  const formData = new FormData(e.target);
+  const data = Object.fromEntries(formData.entries());
 
   fetch(API_URL, {
     method: "POST",
-    body: JSON.stringify(data),
-    headers: {
-      "Content-Type": "application/json"
-    }
+    headers: { "Content-Type":"application/json" },
+    body: JSON.stringify(data)
   })
   .then(r => r.json())
   .then(res => {
-    if (res.ok) {
-      alert("Registro guardado correctamente ✅");
+    if(res.ok){
+      alert("Registro guardado ✅");
+      e.target.reset();
       cargarRegistros();
-      document.getElementById("formRegistro").reset();
-    } else {
-      alert("Error: " + res.error);
+    }else{
+      alert("Error al guardar");
     }
   })
   .catch(err => {
     console.error(err);
-    alert("Error enviando datos ❌");
+    alert("Error de conexión");
   });
+});
+
+function cargarRegistros(){
+  fetch(API_URL)
+    .then(r => r.json())
+    .then(data => {
+      const tbody = document.getElementById("tablaBody");
+      tbody.innerHTML = "";
+
+      data.forEach((r, i) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${i+1}</td>
+          <td>${r.Fecha || ""}</td>
+          <td>${r.Transportadora || ""}</td>
+          <td>${r.Conductor || ""}</td>
+          <td>${r.Placa || ""}</td>
+          <td>${r.Producto || ""}</td>
+          <td>${r.Operación || r.Operacion || ""}</td>
+          <td>${r.Inicio || ""}</td>
+          <td>${r.Fin || ""}</td>
+          <td>${r.Minutos || ""}</td>
+          <td>${r.Muelle || ""}</td>
+          <td>${r.Responsable || ""}</td>
+          <td>${r.Observaciones || ""}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    });
 }
+
+cargarRegistros();
 </script>
 
 </body>
 </html>
-
