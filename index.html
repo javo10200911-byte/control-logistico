@@ -163,6 +163,7 @@
   <table>
     <thead>
       <tr>
+        <th>#</th>
         <th>Fecha</th>
         <th>Transportadora</th>
         <th>Conductor</th>
@@ -238,12 +239,12 @@ function cargarRegistros() {
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td>${i + 1}</td>
-          <td>${new Date(r.Fecha).toLocaleString()}</td>
+          <td>${r.Fecha || ""}</td>
           <td>${r.Transportadora || ""}</td>
           <td>${r.Conductor || ""}</td>
           <td>${r.Placa || ""}</td>
           <td>${r.Producto || ""}</td>
-          <td>${r.Operación || ""}</td>
+          <td>${r.Operacion || ""}</td>
           <td>${r.Inicio || ""}</td>
           <td>${r.Fin || ""}</td>
           <td>${r.Minutos || ""}</td>
@@ -253,7 +254,8 @@ function cargarRegistros() {
         `;
         tabla.appendChild(tr);
       });
-    });
+    })
+    .catch(err => console.error(err));
 }
 
 document.addEventListener("DOMContentLoaded", cargarRegistros);
@@ -267,4 +269,3 @@ window.onload = cargarRegistros;
 
 </body>
 </html>
-
