@@ -225,40 +225,52 @@ function registrar() {
   })
   .catch(() => alert("Error enviando datos ❌"));
 }
-
+function formatearFecha(fechaISO) {
+  if (!fechaISO) return "";
+  const f = new Date(fechaISO);
+  return f.toLocaleDateString("es-CO");
+}
 const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbyOnRWZxaZq7ekI_FCIIKulICD3QwZsqZENxX5lC_OWfAL2pYoT2KtR6-6j_Wm7Rp4DmQ/exec";
 
-function cargarRegistros() {
-  fetch(URL_SCRIPT)
-    .then(res => res.json())
-    .then(data => {
-      const tabla = document.getElementById("tabla");
-      tabla.innerHTML = "";
+async function cargarRegistros() {
+  try {
+    const res = await fetch(URL_API);
+    const data = await res.json();
 
-      data.forEach((r, i) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${i + 1}</td>
-          <td>${r.Fecha || ""}</td>
-          <td>${r.Transportadora || ""}</td>
-          <td>${r.Conductor || ""}</td>
-          <td>${r.Placa || ""}</td>
-          <td>${r.Producto || ""}</td>
-          <td>${r.Operacion || ""}</td>
-          <td>${r.Inicio || ""}</td>
-          <td>${r.Fin || ""}</td>
-          <td>${r.Minutos || ""}</td>
-          <td>${r.Muelle || ""}</td>
-          <td>${r.Responsable || ""}</td>
-          <td>${r.Observaciones || ""}</td>
-        `;
-        tabla.appendChild(tr);
-      });
-    })
-    .catch(err => console.error(err));
+    const tbody = document.querySelector("#tablaRegistros tbody");
+    tbody.innerHTML = "";
+
+    data.forEach((r, i) => {
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+        <td>${i + 1}</td>
+        <td>${formatearFecha(r.Fecha)}</td>
+        <td>${r.Transportadora || ""}</td>
+        <td>${r.Conductor || ""}</td>
+        <td>${r.Placa || ""}</td>
+        <td>${r.Producto || ""}</td>
+        <td>${r.Operacion || ""}</td>
+        <td>${r.Inicio || ""}</td>
+        <td>${r.Fin || ""}</td>
+        <td>${r.Minutos || ""}</td>
+        <td>${r.Muelle || ""}</td>
+        <td>${r.Responsable || ""}</td>
+        <td>${r.Observaciones || ""}</td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+
+  } catch (e) {
+    alert("Error cargando registros");
+    console.error(e);
+  }
 }
 
+
 document.addEventListener("DOMContentLoaded", cargarRegistros);
+  
 </script>
 
 
@@ -269,3 +281,4 @@ window.onload = cargarRegistros;
 
 </body>
 </html>
+
