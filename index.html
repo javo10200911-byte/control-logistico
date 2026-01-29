@@ -210,7 +210,7 @@ function registrar() {
     observaciones: document.getElementById("observaciones").value
   });
 
-  fetch("https://script.google.com/macros/s/AKfycbzQlZ6bF5oM0d5RY82apUVmE5uMCLTbV-E7LesGb57Q0SQNIZ2ctoszyK-4PLpidCCCqg/exec", {
+  fetch(URL_SCRIPT, {
     method: "POST",
     body: formData
   })
@@ -225,34 +225,41 @@ function registrar() {
   })
   .catch(() => alert("Error enviando datos ❌"));
 }
+
+const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbyOnRWZxaZq7ekI_FCIIKulICD3QwZsqZENxX5lC_OWfAL2pYoT2KtR6-6j_Wm7Rp4DmQ/exec";
+
 function cargarRegistros() {
-  fetch("https://script.google.com/macros/s/AKfycbydh0Yw3X82LRctuNltp-ylLIluQ7lNEAUZnvi8-uDdl5WdhqS81wUgR3VdfthILWNQ/exec")
+  fetch(URL_SCRIPT)
     .then(res => res.json())
     .then(data => {
       const tabla = document.getElementById("tabla");
       tabla.innerHTML = "";
 
-      data.forEach((row, i) => {
-        tabla.innerHTML += `
-          <tr>
-            <td>${i + 1}</td>
-            <td>${row[1]}</td>  <!-- Fecha -->
-            <td>${row[2]}</td>  <!-- Transportadora -->
-            <td>${row[3]}</td>  <!-- Conductor -->
-            <td>${row[4]}</td>  <!-- Placa -->
-            <td>${row[5]}</td>  <!-- Producto -->
-            <td>${row[6]}</td>  <!-- Operación -->
-            <td>${row[7]}</td>  <!-- Inicio -->
-            <td>${row[8]}</td>  <!-- Fin -->
-            <td>${row[9]}</td>  <!-- Minutos -->
-            <td>${row[10]}</td> <!-- Muelle -->
-            <td>${row[11]}</td> <!-- Responsable -->
-            <td>${row[12]}</td> <!-- Observaciones -->
-          </tr>
+      data.forEach((r, i) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${i + 1}</td>
+          <td>${new Date(r.Fecha).toLocaleString()}</td>
+          <td>${r.Transportadora || ""}</td>
+          <td>${r.Conductor || ""}</td>
+          <td>${r.Placa || ""}</td>
+          <td>${r.Producto || ""}</td>
+          <td>${r.Operación || ""}</td>
+          <td>${r.Inicio || ""}</td>
+          <td>${r.Fin || ""}</td>
+          <td>${r.Minutos || ""}</td>
+          <td>${r.Muelle || ""}</td>
+          <td>${r.Responsable || ""}</td>
+          <td>${r.Observaciones || ""}</td>
         `;
+        tabla.appendChild(tr);
       });
     });
 }
+
+document.addEventListener("DOMContentLoaded", cargarRegistros);
+</script>
+
 
 // cargar al abrir la página
 window.onload = cargarRegistros;
