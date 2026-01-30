@@ -333,12 +333,16 @@ function eliminar(i){
 
 window.onload=cargar;
   // 🔄 Sincronización automática cada 5 segundos
+let sincronizar = true;
+
 setInterval(() => {
-  cargar();
+  if (sincronizar) cargar();
 }, 5000);
+
 
 </script>
 
 </body>
 </html>
+
 
