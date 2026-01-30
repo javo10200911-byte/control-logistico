@@ -132,7 +132,8 @@ tbody tr:hover{background:#f7f9fc;}
   <h1>🚛 Sistema de Control Logístico</h1>
   <span>Uso interno</span>
 </div>
-
+<div class="card">
+  
 <!-- REGISTRO -->
 <div class="card">
   <h2>📝 Registrar operación</h2>
@@ -170,6 +171,19 @@ tbody tr:hover{background:#f7f9fc;}
   cursor:pointer;">
   📊 Dashboard
 </button>
+</div>
+<h2>🔍 Filtros</h2>
+
+  <div class="grid">
+    <input id="f-fecha" type="date">
+    <input id="f-transportadora" placeholder="Transportadora">
+    <input id="f-producto" placeholder="Producto">
+    <input id="f-placa" placeholder="Placa">
+  </div>
+
+  <button onclick="aplicarFiltros()">Aplicar filtros</button>
+  <button onclick="limpiarFiltros()" style="background:#64748b;">Limpiar</button>
+</div>
 
 </div>
 
@@ -333,6 +347,83 @@ ${r.Observaciones || ""}
     });
     actualizarDashboard(data);
   });
+   fetch(API_URL)
+    .then(r=>r.json())
+    .then(data=>{
+      datosOriginales = data;
+      datosFiltrados = data;
+      renderTabla(data);
+      actualizarDashboard(data);
+    });
+}
+function renderTabla(data){
+  tabla.innerHTML = "";
+
+  data.forEach((r,i)=>{
+    tabla.innerHTML += `
+<tr id="fila-${i}">
+<td>${i+1}</td>
+<td>${r.Fecha||""}</td>
+<td>${r.Transportadora||""}</td>
+<td>${r.Conductor||""}</td>
+<td>${r.Placa||""}</td>
+<td>${r.Producto||""}</td>
+<td>${r.Operacion||""}</td>
+
+<td>${r.Inicio||""}</td>
+
+<td>
+  <input type="time"
+    value="${r.Fin || ""}"
+    ${r.Fin ? "disabled" : ""}
+    onchange="actualizarFin(${i}, this.value)">
+</td>
+
+<td id="min-${i}">${r.Minutos||""}</td>
+<td>${r.Muelle||""}</td>
+<td>${r.Responsable||""}</td>
+
+<td>
+  <textarea
+    ${r.Observaciones ? "disabled" : ""}
+    onblur="actualizarObs(${i}, this.value)">
+${r.Observaciones || ""}
+  </textarea>
+</td>
+
+<td>
+  <button class="btn-delete" onclick="eliminar(${i})">🗑️</button>
+</td>
+</tr>`;
+  });
+}
+function aplicarFiltros(){
+  const fFecha = document.getElementById("f-fecha").value;
+  const fTransportadora = document.getElementById("f-transportadora").value.toUpperCase();
+  const fProducto = document.getElementById("f-producto").value.toUpperCase();
+  const fPlaca = document.getElementById("f-placa").value.toUpperCase();
+
+  datosFiltrados = datosOriginales.filter(r=>{
+    return (
+      (!fFecha || r.Fecha === fFecha) &&
+      (!fTransportadora || (r.Transportadora||"").includes(fTransportadora)) &&
+      (!fProducto || (r.Producto||"").includes(fProducto)) &&
+      (!fPlaca || (r.Placa||"").includes(fPlaca))
+    );
+  });
+
+  renderTabla(datosFiltrados);
+  actualizarDashboard(datosFiltrados);
+}
+function limpiarFiltros(){
+  document.getElementById("f-fecha").value="";
+  document.getElementById("f-transportadora").value="";
+  document.getElementById("f-producto").value="";
+  document.getElementById("f-placa").value="";
+
+  datosFiltrados = datosOriginales;
+  renderTabla(datosOriginales);
+  actualizarDashboard(datosOriginales);
 }
 
 function actualizarFin(i,fin){
@@ -391,9 +482,18 @@ function eliminar(i){
 
 window.onload=cargar;
 // 🔄 Sincronización automática cada 5 segundos
-setInterval(() => {
-  cargar();
-}, 15000);
+setInterval(()=>{
+  fetch(API_URL)
+    .then(r=>r.json())
+    .then(data=>{
+      datosOriginales = data;
+      aplicarFiltros(); // 🔥 reaplica filtros activos
+    });
+},15000);
+
+
+let datosOriginales = [];
+let datosFiltrados = [];
 
 </script>
 
