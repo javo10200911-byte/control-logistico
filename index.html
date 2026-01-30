@@ -310,10 +310,10 @@ function cargar(){
 <td>${r.Inicio||""}</td>
 <td>
   <input type="time"
-    value="${r.Fin || ""}"
-    onfocus="sincronizar=false"
-    onchange="actualizarFin(${i}, this.value)"
-    onblur="sincronizar=true">
+  value="${r.Fin || ""}"
+  ${r.Fin ? "disabled" : ""}
+  onchange="actualizarFin(${i}, this.value)">
+
 </td>
 
 <td id="min-${i}">${r.Minutos||""}</td>
@@ -321,10 +321,11 @@ function cargar(){
 <td>${r.Responsable||""}</td>
 <td>
   <textarea
-    onfocus="sincronizar=false"
-    onblur="sincronizar=true; actualizarObs(${i}, this.value)">
-    ${r.Observaciones || ""}
-  </textarea>
+  ${r.Observaciones ? "disabled" : ""}
+  onblur="actualizarObs(${i}, this.value)">
+${r.Observaciones || ""}
+</textarea>
+
 </td>
 
 <td><button class="btn-delete" onclick="eliminar(${i})">🗑️</button></td>
@@ -339,20 +340,48 @@ function actualizarFin(i,fin){
     const inicio=data[i].Inicio;
     const [hi,mi]=inicio.split(":").map(Number);
     const [hf,mf]=fin.split(":").map(Number);
+
     let d=(hf*3600+mf*60)-(hi*3600+mi*60);
-    if(d<0)return alert("Hora fin inválida");
+    if(d<0) return alert("Hora fin inválida");
+
     const h=Math.floor(d/3600);d%=3600;
     const m=Math.floor(d/60);const s=d%60;
+
     const t=`${h} HH ${m.toString().padStart(2,"0")} MM ${s.toString().padStart(2,"0")} SS`;
     document.getElementById(`min-${i}`).innerText=t;
 
-    fetch(API_URL,{method:"POST",body:JSON.stringify({action:"update",index:i,fin:fin,minutos:t})});
+    fetch(API_URL,{
+      method:"POST",
+      body:JSON.stringify({
+        action:"update",
+        index:i,
+        fin:fin,
+        minutos:t
+      })
+    }).then(()=>{
+      // 🔒 BLOQUEAR EL INPUT FIN
+      document.querySelector(`#fila-${i} input[type="time"]`).disabled = true;
+    });
   });
 }
 
+
 function actualizarObs(i,t){
-  fetch(API_URL,{method:"POST",body:JSON.stringify({action:"updateObs",index:i,observaciones:t.toUpperCase()})});
+  if(!t.trim()) return;
+
+  fetch(API_URL,{
+    method:"POST",
+    body:JSON.stringify({
+      action:"updateObs",
+      index:i,
+      observaciones:t.toUpperCase()
+    })
+  }).then(()=>{
+    // 🔒 BLOQUEAR EL TEXTAREA
+    document.querySelector(`#fila-${i} textarea`).disabled = true;
+  });
 }
+
 
 function eliminar(i){
   if(prompt("Clave admin:")!=="Admin123")return;
