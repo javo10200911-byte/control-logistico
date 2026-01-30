@@ -1,71 +1,139 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>🚛 Registros de Cargue y Descargue</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<title>🚛 Control de Cargue y Descargue</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
-      padding: 20px;
-    }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
-    .card {
-      background: #fff;
-      padding: 20px;
-      border-radius: 6px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,.1);
-    }
+<style>
+:root{
+  --primary:#1f3a5f;
+  --secondary:#2ecc71;
+  --danger:#e74c3c;
+  --bg:#f1f4f9;
+  --card:#ffffff;
+  --border:#e1e5eb;
+}
 
-    h2 { margin-bottom: 10px; }
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Inter','Segoe UI',sans-serif;}
+body{background:var(--bg);padding:20px;}
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 10px;
-    }
+.header{
+  background:var(--primary);
+  color:#fff;
+  padding:18px 24px;
+  border-radius:10px;
+  margin-bottom:20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
 
-    input, select, textarea, button {
-      padding: 8px;
-      font-size: 14px;
-      width: 100%;
-    }
+.card{
+  background:var(--card);
+  border-radius:10px;
+  padding:20px;
+  margin-bottom:20px;
+  box-shadow:0 8px 24px rgba(0,0,0,.06);
+}
 
-    textarea { resize: vertical; }
+h2{font-size:16px;margin-bottom:15px;color:var(--primary);}
 
-    button {
-      background: #2ecc71;
-      color: #fff;
-      border: none;
-      font-size: 16px;
-      cursor: pointer;
-    }
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:12px;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
+input, select, textarea{
+  padding:10px;
+  border-radius:6px;
+  border:1px solid var(--border);
+  font-size:13px;
+  text-transform:uppercase;
+}
 
-    th {
-      background: #2c3e50;
-      color: white;
-      padding: 8px;
-    }
+input[type="time"]{text-transform:none;}
 
-    td {
-      padding: 6px;
-      border-bottom: 1px solid #ddd;
-      text-align: center;
-    }
-  </style>
+button{
+  margin-top:15px;
+  background:var(--secondary);
+  border:none;
+  color:#fff;
+  padding:12px;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.table-wrapper{overflow-x:auto;}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:12px;
+}
+
+thead{background:var(--primary);color:#fff;}
+th,td{
+  padding:8px;
+  border-bottom:1px solid var(--border);
+  text-align:center;
+  white-space:nowrap;
+}
+
+tbody tr:hover{background:#f7f9fc;}
+
+.btn-delete{
+  background:var(--danger);
+  color:#fff;
+  border:none;
+  padding:6px 10px;
+  border-radius:5px;
+  cursor:pointer;
+}
+
+/* DASHBOARD */
+.dashboard{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:15px;
+  margin:20px 0;
+}
+
+.dashboard-card{
+  background:#1f2937;
+  color:#fff;
+  padding:15px;
+  border-radius:10px;
+  text-align:center;
+}
+
+.dashboard-card h4{
+  font-size:14px;
+  opacity:.8;
+}
+
+.dashboard-card span{
+  font-size:22px;
+  font-weight:bold;
+  margin-top:5px;
+  display:block;
+}
+</style>
 </head>
+
 <body>
 
-<!-- ================= REGISTRO ================= -->
+<div class="header">
+  <h1>🚛 Sistema de Control Logístico</h1>
+  <span>Uso interno</span>
+</div>
+
+<!-- REGISTRO -->
 <div class="card">
   <h2>📝 Registrar operación</h2>
 
@@ -78,201 +146,193 @@
 
     <select id="operacion">
       <option value="">Operación</option>
-      <option value="Cargue">Cargue</option>
-      <option value="Descargue">Descargue</option>
+      <option>CARGUE</option>
+      <option>DESCARGUE</option>
     </select>
 
-    <input id="inicio" type="time" onchange="calcularTiempo()">
-    <input id="fin" type="time" onchange="calcularTiempo()">
+    <input id="inicio" type="time">
+    <input id="fin" type="time">
 
-    <input id="minutos" placeholder="Tiempo calculado" readonly>
     <input id="muelle" placeholder="Muelle">
     <input id="responsable" placeholder="Responsable">
   </div>
 
-  <br>
-  <textarea id="observaciones" placeholder="Observaciones"></textarea>
-  <br><br>
-
-  <button onclick="registrar()">Registrar</button>
+  <button onclick="registrar()">Guardar registro</button>
+  <button onclick="exportarExcel()">📥 Exportar Excel</button>
 </div>
 
-<!-- ================= TABLA ================= -->
+<!-- DASHBOARD -->
+<div id="dashboard" class="dashboard">
+  <div class="dashboard-card">
+    <h4>Total Registros</h4>
+    <span id="m-total">0</span>
+  </div>
+
+  <div class="dashboard-card">
+    <h4>Tiempo Promedio</h4>
+    <span id="m-promedio">--</span>
+  </div>
+
+  <div class="dashboard-card">
+    <h4>Tiempo Máximo</h4>
+    <span id="m-max">--</span>
+  </div>
+
+  <div class="dashboard-card">
+    <h4>Tiempo Mínimo</h4>
+    <span id="m-min">--</span>
+  </div>
+</div>
+
+<!-- TABLA -->
 <div class="card">
   <h2>📋 Registros</h2>
 
-  <table>
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Fecha</th>
-        <th>Transportadora</th>
-        <th>Conductor</th>
-        <th>Placa</th>
-        <th>Producto</th>
-        <th>Operación</th>
-        <th>Inicio</th>
-        <th>Fin</th>
-        <th>Minutos</th>
-        <th>Muelle</th>
-        <th>Responsable</th>
-        <th>Observaciones</th>
-      </tr>
-    </thead>
-    <tbody id="tabla"></tbody>
-  </table>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Fecha</th>
+          <th>Transportadora</th>
+          <th>Conductor</th>
+          <th>Placa</th>
+          <th>Producto</th>
+          <th>Operación</th>
+          <th>Inicio</th>
+          <th>Fin</th>
+          <th>Tiempo</th>
+          <th>Muelle</th>
+          <th>Responsable</th>
+          <th>Observaciones</th>
+          <th>Eliminar</th>
+        </tr>
+      </thead>
+      <tbody id="tabla"></tbody>
+    </table>
+  </div>
 </div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbxn-v6Tc9bI-_QHAcRO6yTvGjHdnqG7vIt1neQ8LEmIlyEgtQbdcAe7_vCibeJjojPbYw/exec";
+const API_URL="https://script.google.com/macros/s/AKfycbwaNPotmMQcXYXx1Q0muTeowOrg-fMzXO3nWwp6nKOPfokgCAJQLOrZPX86JCzVFycx/exec";
 
-// -------- CALCULAR TIEMPO --------
-function calcularTiempo() {
-  const inicio = document.getElementById("inicio").value;
-  const fin = document.getElementById("fin").value;
-  if (!inicio || !fin) return;
-
-  const [hi, mi] = inicio.split(":").map(Number);
-  const [hf, mf] = fin.split(":").map(Number);
-
-  let inicioSeg = hi * 3600 + mi * 60;
-  let finSeg = hf * 3600 + mf * 60;
-
-  if (finSeg < inicioSeg) return;
-
-  let diff = finSeg - inicioSeg;
-
-  const h = Math.floor(diff / 3600);
-  diff %= 3600;
-  const m = Math.floor(diff / 60);
-  const s = diff % 60;
-
-  document.getElementById("minutos").value =
-    `${h} hh ${m.toString().padStart(2,"0")} mm ${s.toString().padStart(2,"0")} ss`;
+function exportarExcel(){
+  fetch(API_URL)
+    .then(r=>r.json())
+    .then(data=>{
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Datos");
+      XLSX.writeFile(wb, "Control_Logistico.xlsx");
+    });
 }
 
-// -------- REGISTRAR --------
-function registrar() {
-  const fechaInput = document.getElementById("fecha").value;
-  const fecha = fechaInput ? fechaInput : new Date().toISOString().split("T")[0];
+function actualizarDashboard(data){
+  const tiempos = data.map(r=>r.Minutos).filter(t=>t);
 
-  const data = {
-    fecha,
-    transportadora: transportadora.value,
-    conductor: conductor.value,
-    placa: placa.value,
-    producto: producto.value,
-    operacion: operacion.value,
-    inicio: inicio.value,
-    fin: fin.value,
-    minutos: minutos.value,
-    muelle: muelle.value,
-    responsable: responsable.value,
-    observaciones: observaciones.value
+  document.getElementById("m-total").innerText = data.length;
+  if(!tiempos.length) return;
+
+  const segundos = tiempos.map(t=>{
+    const n = t.match(/\d+/g).map(Number);
+    return n[0]*3600 + n[1]*60 + n[2];
+  });
+
+  const avg = Math.floor(segundos.reduce((a,b)=>a+b,0)/segundos.length);
+  const f=s=>{
+    const h=Math.floor(s/3600);s%=3600;
+    const m=Math.floor(s/60);const ss=s%60;
+    return `${h} HH ${m.toString().padStart(2,"0")} MM ${ss.toString().padStart(2,"0")} SS`;
   };
 
-  fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify(data)
-  })
-  .then(r => r.json())
-  .then(() => {
-    limpiarFormulario();
-    cargarRegistros();
-    alert("Registro guardado correctamente");
-  })
-  .catch(() => alert("Error de conexión"));
+  document.getElementById("m-promedio").innerText=f(avg);
+  document.getElementById("m-max").innerText=f(Math.max(...segundos));
+  document.getElementById("m-min").innerText=f(Math.min(...segundos));
 }
 
-// -------- LIMPIAR FORMULARIO --------
-function limpiarFormulario() {
-  document.querySelectorAll("input, textarea, select").forEach(e => e.value = "");
+function registrar(){
+  if(!fecha.value||!transportadora.value||!operacion.value||!inicio.value){
+    alert("⚠️ Complete los campos obligatorios");
+    return;
+  }
+
+  fetch(API_URL,{
+    method:"POST",
+    body:JSON.stringify({
+      fecha:fecha.value,
+      transportadora:transportadora.value.toUpperCase(),
+      conductor:conductor.value.toUpperCase(),
+      placa:placa.value.toUpperCase(),
+      producto:producto.value.toUpperCase(),
+      operacion:operacion.value,
+      inicio:inicio.value,
+      fin:"",
+      minutos:"",
+      muelle:muelle.value.toUpperCase(),
+      responsable:responsable.value.toUpperCase(),
+      observaciones:""
+    })
+  }).then(()=>{limpiar();cargar();});
 }
 
-// -------- CARGAR REGISTROS --------
-function cargarRegistros() {
-  fetch(API_URL)
-    .then(r => r.json())
-    .then(data => {
-      const tbody = document.getElementById("tabla");
-      tbody.innerHTML = "";
+function limpiar(){
+  document.querySelectorAll("input,select").forEach(e=>e.value="");
+}
 
-      data.forEach((r, i) => {
-        tbody.innerHTML += `
-          <tr>
-            <td>${i+1}</td>
-            <td>${r.Fecha || ""}</td>
-            <td>${r.Transportadora || ""}</td>
-            <td>${r.Conductor || ""}</td>
-            <td>${r.Placa || ""}</td>
-            <td>${r.Producto || ""}</td>
-            <td>${r.Operacion || ""}</td>
-            <td>${r.Inicio || ""}</td>
-          <td>
-  <input type="time"
-         value="${r.Fin || ""}"
-         onchange="actualizarFin(${i}, this.value)">
-</td>
-
-<td id="min-${i}">
-  ${r.Minutos || ""}
-</td>
-            <td>${r.Muelle || ""}</td>
-            <td>${r.Responsable || ""}</td>
-            <td>${r.Observaciones || ""}</td>
-          </tr>`;
-      });
+function cargar(){
+  fetch(API_URL).then(r=>r.json()).then(data=>{
+    tabla.innerHTML="";
+    data.forEach((r,i)=>{
+      tabla.innerHTML+=`
+<tr id="fila-${i}">
+<td>${i+1}</td>
+<td>${r.Fecha||""}</td>
+<td>${r.Transportadora||""}</td>
+<td>${r.Conductor||""}</td>
+<td>${r.Placa||""}</td>
+<td>${r.Producto||""}</td>
+<td>${r.Operacion||""}</td>
+<td>${r.Inicio||""}</td>
+<td><input type="time" value="${r.Fin||""}" onchange="actualizarFin(${i},this.value)"></td>
+<td id="min-${i}">${r.Minutos||""}</td>
+<td>${r.Muelle||""}</td>
+<td>${r.Responsable||""}</td>
+<td><textarea onchange="actualizarObs(${i},this.value)">${r.Observaciones||""}</textarea></td>
+<td><button class="btn-delete" onclick="eliminar(${i})">🗑️</button></td>
+</tr>`;
     });
-}
-  function actualizarFin(index, nuevoFin) {
-  fetch(API_URL)
-    .then(r => r.json())
-    .then(data => {
-
-      const registro = data[index];
-      if (!registro || !registro.Inicio) return;
-
-      const inicio = registro.Inicio;
-
-      // calcular tiempo
-      const [hi, mi] = inicio.split(":").map(Number);
-      const [hf, mf] = nuevoFin.split(":").map(Number);
-
-      let iniSeg = hi * 3600 + mi * 60;
-      let finSeg = hf * 3600 + mf * 60;
-
-      if (finSeg < iniSeg) {
-        alert("La hora fin no puede ser menor a inicio");
-        return;
-      }
-
-      let diff = finSeg - iniSeg;
-      const h = Math.floor(diff / 3600);
-      diff %= 3600;
-      const m = Math.floor(diff / 60);
-      const s = diff % 60;
-
-      const tiempo = `${h} hh ${m.toString().padStart(2,"0")} mm ${s.toString().padStart(2,"0")} ss`;
-
-      // actualizar visual
-      document.getElementById(`min-${index}`).innerText = tiempo;
-
-      // enviar actualización al backend
-      fetch(API_URL, {
-        method: "PUT",
-        body: JSON.stringify({
-          index,
-          fin: nuevoFin,
-          minutos: tiempo
-        })
-      });
-    });
+    actualizarDashboard(data);
+  });
 }
 
+function actualizarFin(i,fin){
+  fetch(API_URL).then(r=>r.json()).then(data=>{
+    const inicio=data[i].Inicio;
+    const [hi,mi]=inicio.split(":").map(Number);
+    const [hf,mf]=fin.split(":").map(Number);
+    let d=(hf*3600+mf*60)-(hi*3600+mi*60);
+    if(d<0)return alert("Hora fin inválida");
+    const h=Math.floor(d/3600);d%=3600;
+    const m=Math.floor(d/60);const s=d%60;
+    const t=`${h} HH ${m.toString().padStart(2,"0")} MM ${s.toString().padStart(2,"0")} SS`;
+    document.getElementById(`min-${i}`).innerText=t;
 
-window.onload = cargarRegistros;
+    fetch(API_URL,{method:"POST",body:JSON.stringify({action:"update",index:i,fin:fin,minutos:t})});
+  });
+}
+
+function actualizarObs(i,t){
+  fetch(API_URL,{method:"POST",body:JSON.stringify({action:"updateObs",index:i,observaciones:t.toUpperCase()})});
+}
+
+function eliminar(i){
+  if(prompt("Clave admin:")!=="Admin123")return;
+  fetch(API_URL,{method:"POST",body:JSON.stringify({action:"delete",index:i})})
+  .then(()=>document.getElementById(`fila-${i}`).remove());
+}
+
+window.onload=cargar;
 </script>
 
 </body>
 </html>
-
