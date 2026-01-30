@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>📊 Dashboard Logístico</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{
+  background:#f1f4f9;
+  font-family:'Inter','Segoe UI',sans-serif;
+  padding:20px;
+}
+
+h1{
+  color:#1f3a5f;
+  margin-bottom:20px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:20px;
+}
+
+.card{
+  background:#fff;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,.06);
+}
+
+canvas{max-height:320px;}
+</style>
+</head>
+
+<body>
+
+<h1>📊 Dashboard de Control Logístico</h1>
+
+<div class="grid">
+
+  <div class="card">
+    <h3>📦 Cargue vs Descargue</h3>
+    <canvas id="chartOperacion"></canvas>
+  </div>
+
+  <div class="card">
+    <h3>🔥 Top 5 Productos</h3>
+    <canvas id="chartProductos"></canvas>
+  </div>
+
+  <div class="card">
+    <h3>⏱️ Distribución de Tiempos</h3>
+    <canvas id="chartDistribucion"></canvas>
+  </div>
+
+</div>
+
+<script>
+const API_URL="https://script.google.com/macros/s/AKfycbwaNPotmMQcXYXx1Q0muTeowOrg-fMzXO3nWwp6nKOPfokgCAJQLOrZPX86JCzVFycx/exec";
+
+// convierte "2 HH 01 MM 00 SS" → segundos
+const t2s = t => {
+  if(!t) return null;
+  const n = t.match(/\d+/g);
+  if(!n) return null;
+  return (+n[0])*3600 + (+n[1])*60 + (+n[2]);
+};
+
+fetch(API_URL)
+.then(r=>r.json())
+.then(data=>{
+
+  /* ===============================
+     📦 CARGUE vs DESCARGUE
+  =============================== */
+  const op = {};
+  data.forEach(r=>{
+    if(!r.Operacion) return;
+    op[r.Operacion] = (op[r.Operacion]||0) + 1;
+  });
+
+  new Chart(chartOperacion,{
+    type:"bar",
+    data:{
+      labels:Object.keys(op),
+      datasets:[{
+        data:Object.values(op),
+        backgroundColor:"#1f3a5f"
+      }]
+    },
+    options:{plugins:{legend:{display:false}}}
+  });
+
+  /* ===============================
+     🔥 TOP 5 PRODUCTOS
+  =============================== */
+  const prod = {};
+  data.forEach(r=>{
+    if(!r.Producto) return;
+    prod[r.Producto] = (prod[r.Producto]||0) + 1;
+  });
+
+  const top = Object.entries(prod)
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0,5);
+
+  new Chart(chartProductos,{
+    type:"bar",
+    data:{
+      labels:top.map(x=>x[0]),
+      datasets:[{
+        data:top.map(x=>x[1]),
+        backgroundColor:"#e67e22"
+      }]
+    },
+    options:{plugins:{legend:{display:false}}}
+  });
+
+  /* ===============================
+     ⏱️ DISTRIBUCIÓN DE TIEMPOS
+  =============================== */
+  const rangos = {
+    "0 – 1 h":0,
+    "1 – 2 h":0,
+    "2 – 4 h":0,
+    "Más de 4 h":0
+  };
+
+  data.forEach(r=>{
+    const s = t2s(r.Minutos);
+    if(!s) return;
+
+    if(s <= 3600) rangos["0 – 1 h"]++;
+    else if(s <= 7200) rangos["1 – 2 h"]++;
+    else if(s <= 14400) rangos["2 – 4 h"]++;
+    else rangos["Más de 4 h"]++;
+  });
+
+  new Chart(chartDistribucion,{
+    type:"bar",
+    data:{
+      labels:Object.keys(rangos),
+      datasets:[{
+        data:Object.values(rangos),
+        backgroundColor:"#2ecc71"
+      }]
+    },
+    options:{
+      indexAxis:'y',
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{
+          title:{
+            display:true,
+            text:"Cantidad de operaciones"
+          }
+        }
+      }
+    }
+  });
+
+});
+</script>
+
+</body>
+</html>
