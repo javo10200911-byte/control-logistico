@@ -130,7 +130,7 @@ tbody tr:hover{background:#f7f9fc;}
 
 <div class="header">
   <h1>🚛 Sistema de Control Logístico</h1>
-
+  <span>Uso interno</span>
 </div>
 
 <!-- REGISTRO -->
@@ -159,6 +159,18 @@ tbody tr:hover{background:#f7f9fc;}
 
   <button onclick="registrar()">Guardar registro</button>
   <button onclick="exportarExcel()">📥 Exportar Excel</button>
+  <button onclick="abrirDashboard()" style="
+  margin-top:15px;
+  background:var(--secondary);
+  border:none;
+  color:#fff;
+  padding:12px;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;">
+  📊 Dashboard
+</button>
+
 </div>
 
 <!-- DASHBOARD -->
@@ -225,6 +237,9 @@ function exportarExcel(){
       XLSX.utils.book_append_sheet(wb, ws, "Datos");
       XLSX.writeFile(wb, "Control_Logistico.xlsx");
     });
+}
+function abrirDashboard(){
+  window.open("dashboard.html", "_blank");
 }
 
 function actualizarDashboard(data){
@@ -293,11 +308,25 @@ function cargar(){
 <td>${r.Producto||""}</td>
 <td>${r.Operacion||""}</td>
 <td>${r.Inicio||""}</td>
-<td><input type="time" value="${r.Fin||""}" onchange="actualizarFin(${i},this.value)"></td>
+<td>
+  <input type="time"
+    value="${r.Fin || ""}"
+    onfocus="sincronizar=false"
+    onchange="actualizarFin(${i}, this.value)"
+    onblur="sincronizar=true">
+</td>
+
 <td id="min-${i}">${r.Minutos||""}</td>
 <td>${r.Muelle||""}</td>
 <td>${r.Responsable||""}</td>
-<td><textarea onchange="actualizarObs(${i},this.value)">${r.Observaciones||""}</textarea></td>
+<td>
+  <textarea
+    onfocus="sincronizar=false"
+    onblur="sincronizar=true; actualizarObs(${i}, this.value)">
+    ${r.Observaciones || ""}
+  </textarea>
+</td>
+
 <td><button class="btn-delete" onclick="eliminar(${i})">🗑️</button></td>
 </tr>`;
     });
@@ -332,19 +361,13 @@ function eliminar(i){
 }
 
 window.onload=cargar;
-  // 🔄 Sincronización automática cada 5 segundos
-let sincronizar = true;
-
+// 🔄 Sincronización automática cada 5 segundos
 setInterval(() => {
-  if (sincronizar) cargar();
+  cargar();
 }, 15000);
-
 
 </script>
 
 </body>
 </html>
-
-
-
 
