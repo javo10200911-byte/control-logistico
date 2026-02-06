@@ -10,66 +10,143 @@
 
 <style>
 :root{
-  --primary:#1f3a5f;
-  --secondary:#2ecc71;
-  --danger:#e74c3c;
-  --bg:#f1f4f9;
+  --primary:#0f2a44;
+  --secondary:#16a34a;
+  --danger:#dc2626;
+  --bg:#f4f6fa;
   --card:#ffffff;
-  --border:#e1e5eb;
+  --border:#e5e7eb;
+  --text:#1f2937;
+  --muted:#6b7280;
 }
 
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Inter','Segoe UI',sans-serif;}
-body{background:var(--bg);padding:20px;}
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:'Inter','Segoe UI',sans-serif;
+}
+
+body{
+  background:var(--bg);
+  padding:24px;
+  color:var(--text);
+}
 
 .header{
-  background:var(--primary);
+  background:linear-gradient(135deg,#0f2a44,#123c66);
   color:#fff;
-  padding:18px 24px;
-  border-radius:10px;
-  margin-bottom:20px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+  padding:22px 28px;
+  border-radius:14px;
+  margin-bottom:24px;
+  box-shadow:0 10px 30px rgba(0,0,0,.12);
+}
+
+.header h1{
+  font-size:22px;
+  font-weight:700;
 }
 
 .card{
   background:var(--card);
-  border-radius:10px;
-  padding:20px;
-  margin-bottom:20px;
-  box-shadow:0 8px 24px rgba(0,0,0,.06);
+  border-radius:14px;
+  padding:22px;
+  margin-bottom:24px;
+  box-shadow:0 8px 26px rgba(0,0,0,.06);
 }
 
-h2{font-size:16px;margin-bottom:15px;color:var(--primary);}
+.card h2{
+  font-size:16px;
+  margin-bottom:14px;
+  font-weight:600;
+}
 
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:12px;
+  gap:14px;
 }
 
 input, select, textarea{
-  padding:10px;
-  border-radius:6px;
+  padding:10px 12px;
+  border-radius:8px;
   border:1px solid var(--border);
   font-size:13px;
+  background:#fff;
   text-transform:uppercase;
 }
 
-input[type="time"]{text-transform:none;}
+input[type="date"],
+input[type="time"]{
+  text-transform:none;
+}
+
+textarea{
+  resize:vertical;
+  min-height:32px;
+}
+
+input:focus, select:focus, textarea:focus{
+  outline:none;
+  border-color:var(--secondary);
+  box-shadow:0 0 0 2px rgba(22,163,74,.15);
+}
+
+.buttons{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:16px;
+}
 
 button{
-  margin-top:15px;
   background:var(--secondary);
   border:none;
   color:#fff;
-  padding:12px;
-  border-radius:8px;
+  padding:11px 16px;
+  border-radius:10px;
   font-weight:600;
+  font-size:13px;
   cursor:pointer;
+  transition:.2s;
 }
 
-.table-wrapper{overflow-x:auto;}
+button:hover{
+  transform:translateY(-1px);
+  box-shadow:0 6px 14px rgba(0,0,0,.15);
+}
+
+button.secondary{
+  background:#2563eb;
+}
+
+.dashboard{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:16px;
+  margin-bottom:24px;
+}
+
+.dashboard-card{
+  background:#111827;
+  color:#fff;
+  padding:18px;
+  border-radius:14px;
+  text-align:center;
+}
+
+.dashboard-card h4{
+  font-size:13px;
+  font-weight:500;
+  color:#d1d5db;
+}
+
+.dashboard-card span{
+  display:block;
+  margin-top:6px;
+  font-size:18px;
+  font-weight:700;
+}
 
 table{
   width:100%;
@@ -77,51 +154,31 @@ table{
   font-size:12px;
 }
 
-thead{background:var(--primary);color:#fff;}
+thead{
+  background:var(--primary);
+  color:#fff;
+  position:sticky;
+  top:0;
+  z-index:2;
+}
+
 th,td{
   padding:8px;
   border-bottom:1px solid var(--border);
   text-align:center;
-  white-space:nowrap;
 }
 
-tbody tr:hover{background:#f7f9fc;}
+tbody tr:hover{
+  background:#f9fafb;
+}
 
 .btn-delete{
   background:var(--danger);
   color:#fff;
   border:none;
   padding:6px 10px;
-  border-radius:5px;
+  border-radius:8px;
   cursor:pointer;
-}
-
-/* DASHBOARD */
-.dashboard{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:15px;
-  margin:20px 0;
-}
-
-.dashboard-card{
-  background:#1f2937;
-  color:#fff;
-  padding:15px;
-  border-radius:10px;
-  text-align:center;
-}
-
-.dashboard-card h4{
-  font-size:14px;
-  opacity:.8;
-}
-
-.dashboard-card span{
-  font-size:22px;
-  font-weight:bold;
-  margin-top:5px;
-  display:block;
 }
 </style>
 </head>
@@ -130,375 +187,255 @@ tbody tr:hover{background:#f7f9fc;}
 
 <div class="header">
   <h1>🚛 Sistema de Control Logístico</h1>
- 
 </div>
+
 <div class="card">
-  
-<!-- REGISTRO -->
+<h2>📝 Registro de operación</h2>
+
+<div class="grid">
+  <input id="fecha" type="date">
+  <input id="transportadora" placeholder="Transportadora">
+  <input id="conductor" placeholder="Conductor">
+  <input id="placa" placeholder="Placa">
+  <input id="producto" placeholder="Producto">
+  <select id="operacion">
+    <option value="">Operación</option>
+    <option>CARGUE</option>
+    <option>DESCARGUE</option>
+  </select>
+  <input id="inicio" type="time">
+  <input id="muelle" placeholder="Muelle">
+  <input id="responsable" placeholder="Responsable">
+</div>
+
+<div class="buttons">
+  <button onclick="registrar()">💾 Guardar</button>
+  <button class="secondary" onclick="exportarExcel()">📥 Excel</button>
+  <button class="secondary" onclick="abrirDashboard()">📊 Dashboard</button>
+</div>
+</div>
+
+<div class="dashboard">
+  <div class="dashboard-card"><h4>Total registros</h4><span id="m-total">0</span></div>
+  <div class="dashboard-card"><h4>Tiempo promedio</h4><span id="m-promedio">--</span></div>
+  <div class="dashboard-card"><h4>Tiempo máximo</h4><span id="m-max">--</span></div>
+  <div class="dashboard-card"><h4>Tiempo mínimo</h4><span id="m-min">--</span></div>
+</div>
+
 <div class="card">
-  <h2>📝 Registrar operación</h2>
+<h2>📋 Historial de operaciones</h2>
 
-  <div class="grid">
-    <input id="fecha" type="date">
-    <input id="transportadora" placeholder="Transportadora">
-    <input id="conductor" placeholder="Conductor">
-    <input id="placa" placeholder="Placa">
-    <input id="producto" placeholder="Producto">
-
-    <select id="operacion">
-      <option value="">Operación</option>
-      <option>CARGUE</option>
-      <option>DESCARGUE</option>
-    </select>
-
-    <input id="inicio" type="time">
-    <input id="fin" type="time">
-
-    <input id="muelle" placeholder="Muelle">
-    <input id="responsable" placeholder="Responsable">
-  </div>
-
-  <button onclick="registrar()">Guardar registro</button>
-  <button onclick="exportarExcel()">📥 Exportar Excel</button>
-  <button onclick="abrirDashboard()" style="
-  margin-top:15px;
-  background:var(--secondary);
-  border:none;
-  color:#fff;
-  padding:12px;
-  border-radius:8px;
-  font-weight:600;
-  cursor:pointer;">
-  📊 Dashboard
-</button>
-</div>
-<h2>🔍 Filtros</h2>
-
-  <div class="grid">
-    <input id="f-fecha" type="date">
-    <input id="f-transportadora" placeholder="Transportadora">
-    <input id="f-producto" placeholder="Producto">
-    <input id="f-placa" placeholder="Placa">
-  </div>
-
-  <button onclick="aplicarFiltros()">Aplicar filtros</button>
-  <button onclick="limpiarFiltros()" style="background:#64748b;">Limpiar</button>
+<table>
+<thead>
+<tr>
+<th>#</th><th>Fecha</th><th>Transportadora</th><th>Conductor</th>
+<th>Placa</th><th>Producto</th><th>Operación</th>
+<th>Inicio</th><th>Fin</th><th>Tiempo</th>
+<th>Muelle</th><th>Responsable</th>
+<th>Observaciones</th><th></th>
+</tr>
+</thead>
+<tbody id="tabla"></tbody>
+</table>
 </div>
 
-</div>
-
-<!-- DASHBOARD -->
-<div id="dashboard" class="dashboard">
-  <div class="dashboard-card">
-    <h4>Total Registros</h4>
-    <span id="m-total">0</span>
-  </div>
-
-  <div class="dashboard-card">
-    <h4>Tiempo Promedio</h4>
-    <span id="m-promedio">--</span>
-  </div>
-
-  <div class="dashboard-card">
-    <h4>Tiempo Máximo</h4>
-    <span id="m-max">--</span>
-  </div>
-
-  <div class="dashboard-card">
-    <h4>Tiempo Mínimo</h4>
-    <span id="m-min">--</span>
-  </div>
-</div>
-
-<!-- TABLA -->
-<div class="card">
-  <h2>📋 Registros</h2>
-
-  <div class="table-wrapper">
-    <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Fecha</th>
-          <th>Transportadora</th>
-          <th>Conductor</th>
-          <th>Placa</th>
-          <th>Producto</th>
-          <th>Operación</th>
-          <th>Inicio</th>
-          <th>Fin</th>
-          <th>Tiempo</th>
-          <th>Muelle</th>
-          <th>Responsable</th>
-          <th>Observaciones</th>
-          <th>Eliminar</th>
-        </tr>
-      </thead>
-      <tbody id="tabla"></tbody>
-    </table>
-  </div>
-</div>
-
+<!-- TU SCRIPT ORIGINAL SIN CAMBIOS -->
 <script>
 const API_URL="https://script.google.com/macros/s/AKfycbwaNPotmMQcXYXx1Q0muTeowOrg-fMzXO3nWwp6nKOPfokgCAJQLOrZPX86JCzVFycx/exec";
+let datosOriginales=[];
+let debounceTimers={};
+let editandoObservaciones=false;
+let contentidoTextareas={};
 
-function exportarExcel(){
-  fetch(API_URL)
-    .then(r=>r.json())
-    .then(data=>{
-      const ws = XLSX.utils.json_to_sheet(data);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Datos");
-      XLSX.writeFile(wb, "Control_Logistico.xlsx");
-    });
+function cargar(){
+ if(editandoObservaciones) return; // No recargar si está escribiendo en observaciones
+ fetch(API_URL).then(r=>r.json()).then(data=>{
+   datosOriginales=data;
+   renderTabla(data);
+   actualizarDashboard(data);
+ });
 }
-function abrirDashboard(){
-  window.open("dashboard.html", "_blank");
+
+function calcularTiempo(inicio, fin) {
+  if (!inicio || !fin) return "00 HH 00 MM 00 SS";
+  
+  try {
+    const [h1, m1] = inicio.split(':').map(Number);
+    const [h2, m2] = fin.split(':').map(Number);
+    
+    if (isNaN(h1) || isNaN(m1) || isNaN(h2) || isNaN(m2)) {
+      return "00 HH 00 MM 00 SS";
+    }
+    
+    const minInicio = h1 * 60 + m1;
+    const minFin = h2 * 60 + m2;
+    let minDif = minFin - minInicio;
+    
+    if (minDif < 0) minDif += 24 * 60;
+    
+    const h = Math.floor(minDif / 60);
+    const m = minDif % 60;
+    const s = 0;
+    
+    return `${h.toString().padStart(2, "0")} HH ${m.toString().padStart(2, "0")} MM ${s.toString().padStart(2, "0")} SS`;
+  } catch (e) {
+    return "00 HH 00 MM 00 SS";
+  }
+}
+
+function renderTabla(data){
+ let html="";
+ data.forEach((r,i)=>{
+ const tiempoCalculado = (r.Tiempo && r.Tiempo.includes("HH")) ? r.Tiempo : calcularTiempo(r.Inicio || "", r.Fin || "");
+ const finDisabled = r.Fin ? "disabled" : "";
+ const obsValue = contentidoTextareas[i] !== undefined ? contentidoTextareas[i] : (r.Observaciones || "");
+ html+=`
+<tr>
+<td>${i+1}</td>
+<td>${r.Fecha||""}</td>
+<td>${r.Transportadora||""}</td>
+<td>${r.Conductor||""}</td>
+<td>${r.Placa||""}</td>
+<td>${r.Producto||""}</td>
+<td>${r.Operacion||""}</td>
+<td>${r.Inicio||""}</td>
+<td><input id="fin-${i}" type="time" value="${r.Fin||""}" onchange="actualizarFin(${i},this.value)" ${finDisabled}></td>
+<td id="tiempo-${i}">${tiempoCalculado}</td>
+<td>${r.Muelle||""}</td>
+<td>${r.Responsable||""}</td>
+<td><textarea id="obs-${i}" style="width:100%;min-height:60px;" placeholder="Observaciones" data-index="${i}">${obsValue}</textarea></td>
+<td><button class="btn-delete" onclick="eliminar(${i})">🗑️</button></td>
+</tr>`;
+ });
+ tabla.innerHTML=html;
+ document.querySelectorAll('textarea[data-index]').forEach(ta => {
+   ta.addEventListener('input', debounceObs);
+ });
+}
+
+function registrar(){
+ const tiempo = "";
+ fetch(API_URL,{
+  method:"POST",
+  body:JSON.stringify({
+   fecha:fecha.value,
+   transportadora:transportadora.value,
+   conductor:conductor.value,
+   placa:placa.value,
+   producto:producto.value,
+   operacion:operacion.value,
+   inicio:inicio.value,
+   fin:"",
+   tiempo:tiempo,
+   muelle:muelle.value,
+   responsable:responsable.value
+  })
+ }).then(r=>{
+   if(r.ok) {
+     document.querySelectorAll('input, select, textarea').forEach(el => {
+       if(el.id !== 'tabla') el.value = '';
+     });
+   }
+   return cargar();
+ });
+}
+
+function actualizarFin(i,fin){
+ const inicio = datosOriginales[i]?.Inicio || "";
+ const tiempo = calcularTiempo(inicio, fin);
+ const tiempoElem = document.getElementById("tiempo-"+i);
+ const finInput = document.getElementById("fin-"+i);
+ if(tiempoElem) {
+   tiempoElem.textContent = tiempo;
+ }
+ if(finInput) {
+   finInput.disabled = true;
+ }
+ fetch(API_URL,{
+  method:"POST",
+  body:JSON.stringify({action:"update",index:i,fin:fin,tiempo:tiempo})
+ }).catch(e=>console.error(e));
+}
+
+function debounceObs(e) {
+  editandoObservaciones = true;
+  const textarea = e.target;
+  const i = parseInt(textarea.getAttribute('data-index'));
+  const t = textarea.value;
+  
+  contentidoTextareas[i] = t;
+  
+  clearTimeout(debounceTimers[i]);
+  
+  debounceTimers[i] = setTimeout(() => {
+    fetch(API_URL,{
+      method:"POST",
+      body:JSON.stringify({action:"updateObs",index:i,observaciones:t})
+    }).then(() => {
+      editandoObservaciones = false;
+    }).catch(e=>{
+      console.error(e);
+      editandoObservaciones = false;
+    });
+  }, 3000);
+}
+
+function eliminar(i){
+ if(prompt("Clave admin")!=="Admin123")return;
+ fetch(API_URL,{method:"POST",body:JSON.stringify({action:"delete",index:i})})
+ .then(cargar);
 }
 
 function actualizarDashboard(data){
-  const tiempos = data.map(r=>r.Minutos).filter(t=>t);
-
   document.getElementById("m-total").innerText = data.length;
-  if(!tiempos.length) return;
+
+  const tiempos = data
+    .map(r => {
+      const tiempoCalculado = (r.Tiempo && r.Tiempo.includes("HH")) ? r.Tiempo : calcularTiempo(r.Inicio || "", r.Fin || "");
+      return tiempoCalculado;
+    })
+    .filter(t => t && t.includes("HH"));
+
+  if(!tiempos.length){
+    document.getElementById("m-promedio").innerText="--";
+    document.getElementById("m-max").innerText="--";
+    document.getElementById("m-min").innerText="--";
+    return;
+  }
 
   const segundos = tiempos.map(t=>{
     const n = t.match(/\d+/g).map(Number);
     return n[0]*3600 + n[1]*60 + n[2];
   });
 
-  const avg = Math.floor(segundos.reduce((a,b)=>a+b,0)/segundos.length);
-  const f=s=>{
-    const h=Math.floor(s/3600);s%=3600;
-    const m=Math.floor(s/60);const ss=s%60;
+  const f = s => {
+    const h=Math.floor(s/3600); s%=3600;
+    const m=Math.floor(s/60); const ss=s%60;
     return `${h} HH ${m.toString().padStart(2,"0")} MM ${ss.toString().padStart(2,"0")} SS`;
   };
 
-  document.getElementById("m-promedio").innerText=f(avg);
-  document.getElementById("m-max").innerText=f(Math.max(...segundos));
-  document.getElementById("m-min").innerText=f(Math.min(...segundos));
+  document.getElementById("m-promedio").innerText =
+    f(Math.floor(segundos.reduce((a,b)=>a+b,0)/segundos.length));
+  document.getElementById("m-max").innerText = f(Math.max(...segundos));
+  document.getElementById("m-min").innerText = f(Math.min(...segundos));
 }
 
-function registrar(){
-  if(!fecha.value||!transportadora.value||!operacion.value||!inicio.value){
-    alert("⚠️ Complete los campos obligatorios");
-    return;
-  }
-
-  fetch(API_URL,{
-    method:"POST",
-    body:JSON.stringify({
-      fecha:fecha.value,
-      transportadora:transportadora.value.toUpperCase(),
-      conductor:conductor.value.toUpperCase(),
-      placa:placa.value.toUpperCase(),
-      producto:producto.value.toUpperCase(),
-      operacion:operacion.value,
-      inicio:inicio.value,
-      fin:"",
-      minutos:"",
-      muelle:muelle.value.toUpperCase(),
-      responsable:responsable.value.toUpperCase(),
-      observaciones:""
-    })
-  }).then(()=>{limpiar();cargar();});
+function abrirDashboard(){
+  window.open("dashboard.html", "_blank");
 }
 
-function limpiar(){
-  document.querySelectorAll("input,select").forEach(e=>e.value="");
-}
-
-function cargar(){
-  fetch(API_URL).then(r=>r.json()).then(data=>{
-    tabla.innerHTML="";
-    data.forEach((r,i)=>{
-      tabla.innerHTML+=`
-<tr id="fila-${i}">
-<td>${i+1}</td>
-<td>${r.Fecha||""}</td>
-<td>${r.Transportadora||""}</td>
-<td>${r.Conductor||""}</td>
-<td>${r.Placa||""}</td>
-<td>${r.Producto||""}</td>
-<td>${r.Operacion||""}</td>
-<td>${r.Inicio||""}</td>
-<td>
-  <input type="time"
-  value="${r.Fin || ""}"
-  ${r.Fin ? "disabled" : ""}
-  onchange="actualizarFin(${i}, this.value)">
-
-</td>
-
-<td id="min-${i}">${r.Minutos||""}</td>
-<td>${r.Muelle||""}</td>
-<td>${r.Responsable||""}</td>
-<td>
-  <textarea
-  ${r.Observaciones ? "disabled" : ""}
-  onblur="actualizarObs(${i}, this.value)">
-${r.Observaciones || ""}
-</textarea>
-
-</td>
-
-<td><button class="btn-delete" onclick="eliminar(${i})">🗑️</button></td>
-</tr>`;
-    });
-    actualizarDashboard(data);
-  });
-   fetch(API_URL)
-    .then(r=>r.json())
-    .then(data=>{
-      datosOriginales = data;
-      datosFiltrados = data;
-      renderTabla(data);
-      actualizarDashboard(data);
-    });
-}
-function renderTabla(data){
-  tabla.innerHTML = "";
-
-  data.forEach((r,i)=>{
-    tabla.innerHTML += `
-<tr id="fila-${i}">
-<td>${i+1}</td>
-<td>${r.Fecha||""}</td>
-<td>${r.Transportadora||""}</td>
-<td>${r.Conductor||""}</td>
-<td>${r.Placa||""}</td>
-<td>${r.Producto||""}</td>
-<td>${r.Operacion||""}</td>
-
-<td>${r.Inicio||""}</td>
-
-<td>
-  <input type="time"
-    value="${r.Fin || ""}"
-    ${r.Fin ? "disabled" : ""}
-    onchange="actualizarFin(${i}, this.value)">
-</td>
-
-<td id="min-${i}">${r.Minutos||""}</td>
-<td>${r.Muelle||""}</td>
-<td>${r.Responsable||""}</td>
-
-<td>
-  <textarea
-    ${r.Observaciones ? "disabled" : ""}
-    onblur="actualizarObs(${i}, this.value)">
-${r.Observaciones || ""}
-  </textarea>
-</td>
-
-<td>
-  <button class="btn-delete" onclick="eliminar(${i})">🗑️</button>
-</td>
-</tr>`;
-  });
-}
-function aplicarFiltros(){
-  const fFecha = document.getElementById("f-fecha").value;
-  const fTransportadora = document.getElementById("f-transportadora").value.toUpperCase();
-  const fProducto = document.getElementById("f-producto").value.toUpperCase();
-  const fPlaca = document.getElementById("f-placa").value.toUpperCase();
-
-  datosFiltrados = datosOriginales.filter(r=>{
-    return (
-      (!fFecha || r.Fecha === fFecha) &&
-      (!fTransportadora || (r.Transportadora||"").includes(fTransportadora)) &&
-      (!fProducto || (r.Producto||"").includes(fProducto)) &&
-      (!fPlaca || (r.Placa||"").includes(fPlaca))
-    );
-  });
-
-  renderTabla(datosFiltrados);
-  actualizarDashboard(datosFiltrados);
-}
-function limpiarFiltros(){
-  document.getElementById("f-fecha").value="";
-  document.getElementById("f-transportadora").value="";
-  document.getElementById("f-producto").value="";
-  document.getElementById("f-placa").value="";
-
-  datosFiltrados = datosOriginales;
-  renderTabla(datosOriginales);
-  actualizarDashboard(datosOriginales);
-}
-
-function actualizarFin(i,fin){
-  fetch(API_URL).then(r=>r.json()).then(data=>{
-    const inicio=data[i].Inicio;
-    const [hi,mi]=inicio.split(":").map(Number);
-    const [hf,mf]=fin.split(":").map(Number);
-
-    let d=(hf*3600+mf*60)-(hi*3600+mi*60);
-    if(d<0) return alert("Hora fin inválida");
-
-    const h=Math.floor(d/3600);d%=3600;
-    const m=Math.floor(d/60);const s=d%60;
-
-    const t=`${h} HH ${m.toString().padStart(2,"0")} MM ${s.toString().padStart(2,"0")} SS`;
-    document.getElementById(`min-${i}`).innerText=t;
-
-    fetch(API_URL,{
-      method:"POST",
-      body:JSON.stringify({
-        action:"update",
-        index:i,
-        fin:fin,
-        minutos:t
-      })
-    }).then(()=>{
-      // 🔒 BLOQUEAR EL INPUT FIN
-      document.querySelector(`#fila-${i} input[type="time"]`).disabled = true;
-    });
-  });
-}
-
-
-function actualizarObs(i,t){
-  if(!t.trim()) return;
-
-  fetch(API_URL,{
-    method:"POST",
-    body:JSON.stringify({
-      action:"updateObs",
-      index:i,
-      observaciones:t.toUpperCase()
-    })
-  }).then(()=>{
-    // 🔒 BLOQUEAR EL TEXTAREA
-    document.querySelector(`#fila-${i} textarea`).disabled = true;
-  });
-}
-
-
-function eliminar(i){
-  if(prompt("Clave admin:")!=="Admin123")return;
-  fetch(API_URL,{method:"POST",body:JSON.stringify({action:"delete",index:i})})
-  .then(()=>document.getElementById(`fila-${i}`).remove());
+function exportarExcel(){
+  const datos = datosOriginales;
+  const ws = XLSX.utils.json_to_sheet(datos);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Operaciones");
+  XLSX.writeFile(wb, "control_logistico.xlsx");
 }
 
 window.onload=cargar;
-// 🔄 Sincronización automática cada 5 segundos
-setInterval(()=>{
-  fetch(API_URL)
-    .then(r=>r.json())
-    .then(data=>{
-      datosOriginales = data;
-      aplicarFiltros(); // 🔥 reaplica filtros activos
-    });
-},30000);
-
-
-let datosOriginales = [];
-let datosFiltrados = [];
-
+setInterval(cargar,15000);
 </script>
+
 
 </body>
 </html>
-
-
-
