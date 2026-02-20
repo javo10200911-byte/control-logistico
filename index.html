@@ -312,7 +312,36 @@ function renderTabla(data){
    ta.addEventListener('input', debounceObs);
  });
 }
+function aplicarFiltros(){
 
+  const filtros = {
+    Fecha: document.getElementById("f-fecha").value,
+    Transportadora: document.getElementById("f-transportadora").value.toUpperCase(),
+    Conductor: document.getElementById("f-conductor").value.toUpperCase(),
+    Placa: document.getElementById("f-placa").value.toUpperCase(),
+    Producto: document.getElementById("f-producto").value.toUpperCase()
+  };
+
+  const filtrados = datosOriginales.filter(r => {
+
+    return (
+      (!filtros.Fecha || r.Fecha === filtros.Fecha) &&
+      (!filtros.Transportadora || (r.Transportadora || "").toUpperCase().includes(filtros.Transportadora)) &&
+      (!filtros.Conductor || (r.Conductor || "").toUpperCase().includes(filtros.Conductor)) &&
+      (!filtros.Placa || (r.Placa || "").toUpperCase().includes(filtros.Placa)) &&
+      (!filtros.Producto || (r.Producto || "").toUpperCase().includes(filtros.Producto))
+    );
+
+  });
+
+  renderTabla(filtrados);
+  actualizarDashboard(filtrados);
+}
+function limpiarFiltros(){
+  document.querySelectorAll('[id^="f-"]').forEach(input => input.value = "");
+  renderTabla(datosOriginales);
+  actualizarDashboard(datosOriginales);
+}
 function registrar(){
  const tiempo = "";
  fetch(API_URL,{
@@ -439,3 +468,4 @@ setInterval(cargar,15000);
 
 </body>
 </html>
+
