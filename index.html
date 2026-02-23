@@ -418,6 +418,7 @@ tbody tr:last-child td{
 <script>
 const API_URL="https://script.google.com/macros/s/AKfycbwaNPotmMQcXYXx1Q0muTeowOrg-fMzXO3nWwp6nKOPfokgCAJQLOrZPX86JCzVFycx/exec";
 let datosOriginales=[];
+let filtrosActivos = false;
 let debounceTimers={};
 let editandoObservaciones=false;
 let contentidoTextareas={};
@@ -442,11 +443,14 @@ function cargar(){
      if (!r.ok) throw new Error("Error al conectar con el servidor");
      return r.json();
    })
-   .then(data=>{
-     datosOriginales=data || [];
-     renderTabla(data || []);
-     actualizarDashboard(data || []);
-   })
+  .then(data=>{
+  datosOriginales = data || [];
+
+  if(!filtrosActivos){
+    renderTabla(datosOriginales);
+    actualizarDashboard(datosOriginales);
+  }
+})
    .catch(e => {
      console.error("Error cargando datos:", e);
      mostrarAlerta("⚠️ Error al cargar los datos. Reintentando...", "error");
@@ -519,8 +523,9 @@ function aplicarFiltros(){
     Producto: document.getElementById("f-producto").value.toUpperCase()
   };
 
-  const filtrados = datosOriginales.filter(r => {
+  filtrosActivos = Object.values(filtros).some(f => f !== "");
 
+  const filtrados = datosOriginales.filter(r => {
     return (
       (!filtros.Fecha || r.Fecha === filtros.Fecha) &&
       (!filtros.Transportadora || (r.Transportadora || "").toUpperCase().includes(filtros.Transportadora)) &&
@@ -528,7 +533,6 @@ function aplicarFiltros(){
       (!filtros.Placa || (r.Placa || "").toUpperCase().includes(filtros.Placa)) &&
       (!filtros.Producto || (r.Producto || "").toUpperCase().includes(filtros.Producto))
     );
-
   });
 
   renderTabla(filtrados);
@@ -536,6 +540,7 @@ function aplicarFiltros(){
 }
 function limpiarFiltros(){
   document.querySelectorAll('[id^="f-"]').forEach(input => input.value = "");
+  filtrosActivos = false;
   renderTabla(datosOriginales);
   actualizarDashboard(datosOriginales);
 }
