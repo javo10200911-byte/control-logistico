@@ -13,7 +13,9 @@
   --primary:#0f2a44;
   --secondary:#16a34a;
   --danger:#dc2626;
-  --bg:#f4f6fa;
+  --success:#059669;
+  --warning:#f59e0b;
+  --bg:#f0f4f9;
   --card:#ffffff;
   --border:#e5e7eb;
   --text:#1f2937;
@@ -27,53 +29,72 @@
   font-family:'Inter','Segoe UI',sans-serif;
 }
 
+html, body{
+  height:100%;
+}
+
 body{
-  background:var(--bg);
-  padding:24px;
+  background:linear-gradient(135deg, #f0f4f9 0%, #e9ecf1 100%);
+  padding:20px;
   color:var(--text);
+  min-height:100vh;
 }
 
 .header{
-  background:linear-gradient(135deg,#0f2a44,#123c66);
+  background:linear-gradient(135deg,#0f2a44 0%, #1e3a5f 100%);
   color:#fff;
-  padding:22px 28px;
-  border-radius:14px;
-  margin-bottom:24px;
-  box-shadow:0 10px 30px rgba(0,0,0,.12);
+  padding:28px 32px;
+  border-radius:16px;
+  margin-bottom:28px;
+  box-shadow:0 12px 40px rgba(15,42,68,.18);
+  border-bottom:4px solid var(--secondary);
 }
 
 .header h1{
-  font-size:22px;
+  font-size:26px;
   font-weight:700;
+  letter-spacing:0.5px;
+}
+
+.header p{
+  font-size:13px;
+  color:#cbd5e1;
+  margin-top:6px;
 }
 
 .card{
   background:var(--card);
-  border-radius:14px;
-  padding:22px;
-  margin-bottom:24px;
-  box-shadow:0 8px 26px rgba(0,0,0,.06);
+  border-radius:16px;
+  padding:26px;
+  margin-bottom:28px;
+  box-shadow:0 4px 16px rgba(0,0,0,.08);
+  border:1px solid rgba(229,231,235,.8);
 }
 
 .card h2{
   font-size:16px;
-  margin-bottom:14px;
+  margin-bottom:16px;
   font-weight:600;
+  color:var(--primary);
+  display:flex;
+  align-items:center;
+  gap:8px;
 }
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:14px;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:12px;
 }
 
 input, select, textarea{
-  padding:10px 12px;
-  border-radius:8px;
-  border:1px solid var(--border);
+  padding:11px 13px;
+  border-radius:10px;
+  border:1.5px solid var(--border);
   font-size:13px;
   background:#fff;
   text-transform:uppercase;
+  transition:all 0.3s ease;
 }
 
 input[type="date"],
@@ -83,102 +104,236 @@ input[type="time"]{
 
 textarea{
   resize:vertical;
-  min-height:32px;
+  min-height:40px;
+  font-family:inherit;
+  text-transform:none;
 }
 
 input:focus, select:focus, textarea:focus{
   outline:none;
   border-color:var(--secondary);
-  box-shadow:0 0 0 2px rgba(22,163,74,.15);
+  box-shadow:0 0 0 3px rgba(22,163,74,.12);
+  background:#fafbfc;
+}
+
+input:invalid, select:invalid {
+  border-color:var(--danger);
 }
 
 .buttons{
   display:flex;
-  gap:10px;
+  gap:12px;
   flex-wrap:wrap;
-  margin-top:16px;
+  margin-top:20px;
 }
 
 button{
-  background:var(--secondary);
+  background:linear-gradient(135deg, var(--secondary) 0%, #15803d 100%);
   border:none;
   color:#fff;
-  padding:11px 16px;
+  padding:12px 20px;
   border-radius:10px;
   font-weight:600;
   font-size:13px;
   cursor:pointer;
-  transition:.2s;
+  transition:all 0.3s ease;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  box-shadow:0 4px 12px rgba(22,163,74,.2);
 }
 
 button:hover{
-  transform:translateY(-1px);
-  box-shadow:0 6px 14px rgba(0,0,0,.15);
+  transform:translateY(-2px);
+  box-shadow:0 6px 20px rgba(22,163,74,.3);
+}
+
+button:active{
+  transform:translateY(0);
 }
 
 button.secondary{
-  background:#2563eb;
+  background:linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  box-shadow:0 4px 12px rgba(37,99,235,.2);
+}
+
+button.secondary:hover{
+  box-shadow:0 6px 20px rgba(37,99,235,.3);
+}
+
+button.danger{
+  background:linear-gradient(135deg, var(--danger) 0%, #b91c1c 100%);
+}
+
+button:disabled{
+  opacity:0.6;
+  cursor:not-allowed;
+  transform:none;
 }
 
 .dashboard{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
   gap:16px;
-  margin-bottom:24px;
+  margin-bottom:28px;
 }
 
 .dashboard-card{
-  background:#111827;
+  background:linear-gradient(135deg, #111827 0%, #1f2937 100%);
   color:#fff;
-  padding:18px;
-  border-radius:14px;
+  padding:20px;
+  border-radius:16px;
   text-align:center;
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow:0 8px 24px rgba(0,0,0,.12);
+  transition:all 0.3s ease;
+}
+
+.dashboard-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 12px 32px rgba(0,0,0,.18);
 }
 
 .dashboard-card h4{
-  font-size:13px;
+  font-size:12px;
   font-weight:500;
-  color:#d1d5db;
+  color:#e5e7eb;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
 }
 
 .dashboard-card span{
   display:block;
-  margin-top:6px;
-  font-size:18px;
+  margin-top:10px;
+  font-size:24px;
   font-weight:700;
+  color:var(--secondary);
+}
+
+.table-wrapper{
+  overflow-x:auto;
+  border-radius:16px;
+  box-shadow:0 4px 16px rgba(0,0,0,.08);
 }
 
 table{
   width:100%;
   border-collapse:collapse;
   font-size:12px;
+  background:#fff;
 }
 
 thead{
-  background:var(--primary);
+  background:linear-gradient(135deg, var(--primary) 0%, #1e3a5f 100%);
   color:#fff;
   position:sticky;
   top:0;
   z-index:2;
 }
 
-th,td{
-  padding:8px;
+th{
+  padding:12px 8px;
+  text-align:center;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:0.3px;
+  font-size:11px;
+  border-bottom:2px solid rgba(255,255,255,.2);
+}
+
+td{
+  padding:10px 8px;
   border-bottom:1px solid var(--border);
   text-align:center;
 }
 
+tbody tr{
+  transition:all 0.2s ease;
+}
+
 tbody tr:hover{
   background:#f9fafb;
+  box-shadow:0 2px 8px rgba(0,0,0,.04);
+}
+
+tbody tr:last-child td{
+  border-bottom:none;
 }
 
 .btn-delete{
   background:var(--danger);
   color:#fff;
   border:none;
-  padding:6px 10px;
+  padding:7px 12px;
   border-radius:8px;
   cursor:pointer;
+  font-size:13px;
+  transition:all 0.2s ease;
+  box-shadow:0 2px 8px rgba(220,38,38,.2);
+}
+
+.btn-delete:hover{
+  background:#b91c1c;
+  transform:scale(1.05);
+}
+
+.alert{
+  padding:12px 16px;
+  border-radius:10px;
+  margin-bottom:16px;
+  font-size:13px;
+  display:none;
+  animation:slideIn 0.3s ease;
+}
+
+.alert.success{
+  background:#d1fae5;
+  border:1px solid #6ee7b7;
+  color:#065f46;
+}
+
+.alert.error{
+  background:#fee2e2;
+  border:1px solid #fca5a5;
+  color:#7f1d1d;
+}
+
+@keyframes slideIn {
+  from {
+    opacity:0;
+    transform:translateY(-10px);
+  }
+  to {
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.loading {
+  display:inline-block;
+  width:4px;
+  height:4px;
+  background:currentColor;
+  border-radius:50%;
+  animation:pulse 1.5s infinite;
+  margin-left:4px;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity:0.3; }
+  50% { opacity:1; }
+}
+
+@media (max-width:768px){
+  body { padding:12px; }
+  .header { padding:20px; }
+  .header h1 { font-size:20px; }
+  .card { padding:16px; }
+  .grid { grid-template-columns:1fr; }
+  .dashboard { grid-template-columns:repeat(2,1fr); }
+  .buttons { flex-direction:column; }
+  button { width:100%; justify-content:center; }
+  th, td { padding:6px 4px; font-size:11px; }
 }
 </style>
 </head>
@@ -187,31 +342,34 @@ tbody tr:hover{
 
 <div class="header">
   <h1>🚛 Sistema de Control Logístico</h1>
+  <p>Gestión integral de operaciones de cargue y descargue</p>
 </div>
+
+<div id="alerta" class="alert"></div>
 
 <div class="card">
 <h2>📝 Registro de operación</h2>
 
 <div class="grid">
-  <input id="fecha" type="date">
-  <input id="transportadora" placeholder="Transportadora">
-  <input id="conductor" placeholder="Conductor">
-  <input id="placa" placeholder="Placa">
-  <input id="producto" placeholder="Producto">
-  <select id="operacion">
+  <input id="fecha" type="date" required>
+  <input id="transportadora" placeholder="Transportadora" required>
+  <input id="conductor" placeholder="Conductor" required>
+  <input id="placa" placeholder="Placa" required>
+  <input id="producto" placeholder="Producto" required>
+  <select id="operacion" required>
     <option value="">Operación</option>
     <option>CARGUE</option>
     <option>DESCARGUE</option>
   </select>
-  <input id="inicio" type="time">
+  <input id="inicio" type="time" required>
   <input id="muelle" placeholder="Muelle">
-  <input id="responsable" placeholder="Responsable">
+  <input id="responsable" placeholder="Responsable" required>
 </div>
 
 <div class="buttons">
-  <button onclick="registrar()">💾 Guardar</button>
-  <button class="secondary" onclick="exportarExcel()">📥 Excel</button>
-  <button class="secondary" onclick="abrirDashboard()">📊 Dashboard</button>
+  <button onclick="registrar()">💾 Guardar registro</button>
+  <button class="secondary" onclick="exportarExcel()">📥 Descargar Excel</button>
+  <button class="secondary" onclick="abrirDashboard()">📊 Ver Dashboard</button>
 </div>
 </div>
 
@@ -221,9 +379,8 @@ tbody tr:hover{
   <div class="dashboard-card"><h4>Tiempo máximo</h4><span id="m-max">--</span></div>
   <div class="dashboard-card"><h4>Tiempo mínimo</h4><span id="m-min">--</span></div>
 </div>
-
 <div class="card">
- <h2>🔎 Filtros de búsqueda</h2>
+<h2>🔎 Filtros de búsqueda</h2>
 
 <div class="grid">
   <input id="f-fecha" type="date">
@@ -238,9 +395,10 @@ tbody tr:hover{
   <button class="danger" onclick="limpiarFiltros()">🧹 Limpiar filtros</button>
 </div>
 </div>
-<div class="card"> 
+<div class="card">
 <h2>📋 Historial de operaciones</h2>
 
+<div class="table-wrapper">
 <table>
 <thead>
 <tr>
@@ -248,11 +406,12 @@ tbody tr:hover{
 <th>Placa</th><th>Producto</th><th>Operación</th>
 <th>Inicio</th><th>Fin</th><th>Tiempo</th>
 <th>Muelle</th><th>Responsable</th>
-<th>Observaciones</th><th></th>
+<th>Observaciones</th><th>Acciones</th>
 </tr>
 </thead>
 <tbody id="tabla"></tbody>
 </table>
+</div>
 </div>
 
 <!-- TU SCRIPT ORIGINAL SIN CAMBIOS -->
@@ -263,13 +422,35 @@ let debounceTimers={};
 let editandoObservaciones=false;
 let contentidoTextareas={};
 
+function mostrarAlerta(mensaje, tipo="success") {
+  const alerta = document.getElementById("alerta");
+  alerta.textContent = mensaje;
+  alerta.className = `alert ${tipo}`;
+  alerta.style.display = "block";
+  
+  if (tipo === "success") {
+    setTimeout(() => {
+      alerta.style.display = "none";
+    }, 3000);
+  }
+}
+
 function cargar(){
- if(editandoObservaciones) return; // No recargar si está escribiendo en observaciones
- fetch(API_URL).then(r=>r.json()).then(data=>{
-   datosOriginales=data;
-   renderTabla(data);
-   actualizarDashboard(data);
- });
+ if(editandoObservaciones) return;
+ fetch(API_URL)
+   .then(r => {
+     if (!r.ok) throw new Error("Error al conectar con el servidor");
+     return r.json();
+   })
+   .then(data=>{
+     datosOriginales=data || [];
+     renderTabla(data || []);
+     actualizarDashboard(data || []);
+   })
+   .catch(e => {
+     console.error("Error cargando datos:", e);
+     mostrarAlerta("⚠️ Error al cargar los datos. Reintentando...", "error");
+   });
 }
 
 function calcularTiempo(inicio, fin) {
@@ -359,34 +540,71 @@ function limpiarFiltros(){
   actualizarDashboard(datosOriginales);
 }
 function registrar(){
+ const campos = {
+   fecha: document.getElementById("fecha"),
+   transportadora: document.getElementById("transportadora"),
+   conductor: document.getElementById("conductor"),
+   placa: document.getElementById("placa"),
+   producto: document.getElementById("producto"),
+   operacion: document.getElementById("operacion"),
+   inicio: document.getElementById("inicio"),
+   responsable: document.getElementById("responsable")
+ };
+
+ for (let [nombre, campo] of Object.entries(campos)) {
+   if (!campo.value.trim()) {
+     mostrarAlerta("Por favor completa: " + nombre.toUpperCase(), "error");
+     campo.focus();
+     return;
+   }
+ }
+
+ const muelle = document.getElementById("muelle");
+ const responsable = document.getElementById("responsable");
  const tiempo = "";
+
  fetch(API_URL,{
   method:"POST",
   body:JSON.stringify({
-   fecha:fecha.value,
-   transportadora:transportadora.value,
-   conductor:conductor.value,
-   placa:placa.value,
-   producto:producto.value,
-   operacion:operacion.value,
-   inicio:inicio.value,
+   fecha:campos.fecha.value,
+   transportadora:campos.transportadora.value,
+   conductor:campos.conductor.value,
+   placa:campos.placa.value,
+   producto:campos.producto.value,
+   operacion:campos.operacion.value,
+   inicio:campos.inicio.value,
    fin:"",
    tiempo:tiempo,
    muelle:muelle.value,
    responsable:responsable.value
   })
  }).then(r=>{
-   if(r.ok) {
-     document.querySelectorAll('input, select, textarea').forEach(el => {
-       if(el.id !== 'tabla') el.value = '';
-     });
-   }
+   if(!r.ok) throw new Error("Error al guardar");
+   mostrarAlerta("Registro guardado correctamente", "success");
+   Object.values(campos).forEach(campo => campo.value = "");
+   muelle.value = "";
+   responsable.value = "";
    return cargar();
+ }).catch(e=>{
+   console.error(e);
+   mostrarAlerta("Error al guardar: " + e.message, "error");
  });
 }
 
 function actualizarFin(i,fin){
  const inicio = datosOriginales[i]?.Inicio || "";
+ 
+ if (!fin) {
+   mostrarAlerta("⚠️ Por favor ingresa una hora de fin", "error");
+   return;
+ }
+ 
+ if (inicio && fin <= inicio) {
+   mostrarAlerta("⚠️ La hora de fin debe ser posterior a la hora de inicio", "error");
+   document.getElementById("fin-"+i).value = "";
+   return;
+ }
+ 
  const tiempo = calcularTiempo(inicio, fin);
  const tiempoElem = document.getElementById("tiempo-"+i);
  const finInput = document.getElementById("fin-"+i);
@@ -399,7 +617,10 @@ function actualizarFin(i,fin){
  fetch(API_URL,{
   method:"POST",
   body:JSON.stringify({action:"update",index:i,fin:fin,tiempo:tiempo})
- }).catch(e=>console.error(e));
+ }).catch(e=>{
+   console.error(e);
+   mostrarAlerta("⚠️ Error al guardar la hora de fin", "error");
+ });
 }
 
 function debounceObs(e) {
@@ -416,65 +637,113 @@ function debounceObs(e) {
     fetch(API_URL,{
       method:"POST",
       body:JSON.stringify({action:"updateObs",index:i,observaciones:t})
-    }).then(() => {
+    }).then(r => {
+      if(!r.ok) throw new Error("Error al guardar observaciones");
       editandoObservaciones = false;
     }).catch(e=>{
       console.error(e);
+      mostrarAlerta("⚠️ Error al guardar observaciones", "error");
       editandoObservaciones = false;
     });
   }, 3000);
 }
 
 function eliminar(i){
- if(prompt("Clave admin")!=="Admin123")return;
+ const clave = prompt("Ingresa la clave de administrador para eliminar:");
+ if (!clave) return;
+ if(clave !== "Admin123"){
+   mostrarAlerta("Clave incorrecta. No se pudo eliminar.", "error");
+   return;
+ }
+ if(!confirm("Estás seguro de que deseas eliminar este registro? No se puede deshacer.")) return;
+ 
  fetch(API_URL,{method:"POST",body:JSON.stringify({action:"delete",index:i})})
- .then(cargar);
+   .then(r => {
+     if(!r.ok) throw new Error("Error al eliminar");
+     mostrarAlerta("Registro eliminado correctamente", "success");
+     return cargar();
+   })
+   .catch(e=>{
+     console.error(e);
+     mostrarAlerta("Error al eliminar: " + e.message, "error");
+   });
 }
 
 function actualizarDashboard(data){
-  document.getElementById("m-total").innerText = data.length;
+  try {
+    document.getElementById("m-total").innerText = (data || []).length;
 
-  const tiempos = data
-    .map(r => {
-      const tiempoCalculado = (r.Tiempo && r.Tiempo.includes("HH")) ? r.Tiempo : calcularTiempo(r.Inicio || "", r.Fin || "");
-      return tiempoCalculado;
-    })
-    .filter(t => t && t.includes("HH"));
+    const tiempos = (data || [])
+      .map(r => {
+        const tiempoCalculado = (r.Tiempo && r.Tiempo.includes("HH")) ? r.Tiempo : calcularTiempo(r.Inicio || "", r.Fin || "");
+        return tiempoCalculado;
+      })
+      .filter(t => t && t.includes("HH"));
 
-  if(!tiempos.length){
-    document.getElementById("m-promedio").innerText="--";
-    document.getElementById("m-max").innerText="--";
-    document.getElementById("m-min").innerText="--";
-    return;
+    if(!tiempos.length){
+      document.getElementById("m-promedio").innerText="--";
+      document.getElementById("m-max").innerText="--";
+      document.getElementById("m-min").innerText="--";
+      return;
+    }
+
+    const segundos = tiempos.map(t=>{
+      const n = t.match(/\d+/g).map(Number);
+      return n[0]*3600 + n[1]*60 + n[2];
+    });
+
+    const f = s => {
+      const h=Math.floor(s/3600); s%=3600;
+      const m=Math.floor(s/60); const ss=s%60;
+      return `${h} HH ${m.toString().padStart(2,"0")} MM ${ss.toString().padStart(2,"0")} SS`;
+    };
+
+    document.getElementById("m-promedio").innerText =
+      f(Math.floor(segundos.reduce((a,b)=>a+b,0)/segundos.length));
+    document.getElementById("m-max").innerText = f(Math.max(...segundos));
+    document.getElementById("m-min").innerText = f(Math.min(...segundos));
+  } catch (e) {
+    console.error("Error actualizando dashboard:", e);
   }
-
-  const segundos = tiempos.map(t=>{
-    const n = t.match(/\d+/g).map(Number);
-    return n[0]*3600 + n[1]*60 + n[2];
-  });
-
-  const f = s => {
-    const h=Math.floor(s/3600); s%=3600;
-    const m=Math.floor(s/60); const ss=s%60;
-    return `${h} HH ${m.toString().padStart(2,"0")} MM ${ss.toString().padStart(2,"0")} SS`;
-  };
-
-  document.getElementById("m-promedio").innerText =
-    f(Math.floor(segundos.reduce((a,b)=>a+b,0)/segundos.length));
-  document.getElementById("m-max").innerText = f(Math.max(...segundos));
-  document.getElementById("m-min").innerText = f(Math.min(...segundos));
 }
 
 function abrirDashboard(){
-  window.open("dashboard.html", "_blank");
+  const nueva = window.open("dashboard.html", "dashboard");
+  if (!nueva) {
+    mostrarAlerta("No se pudo abrir el dashboard. Asegúrate de que dashboard.html existe.", "error");
+  }
 }
 
 function exportarExcel(){
-  const datos = datosOriginales;
-  const ws = XLSX.utils.json_to_sheet(datos);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Operaciones");
-  XLSX.writeFile(wb, "control_logistico.xlsx");
+ try {
+   if(!datosOriginales || datosOriginales.length === 0){
+     mostrarAlerta("No hay datos para exportar", "error");
+     return;
+   }
+   const datos = datosOriginales.map(r => ({
+     Fecha: r.Fecha || "",
+     Transportadora: r.Transportadora || "",
+     Conductor: r.Conductor || "",
+     Placa: r.Placa || "",
+     Producto: r.Producto || "",
+     Operacion: r.Operacion || "",
+     Inicio: r.Inicio || "",
+     Fin: r.Fin || "",
+     Tiempo: r.Tiempo || "",
+     Muelle: r.Muelle || "",
+     Responsable: r.Responsable || "",
+     Observaciones: r.Observaciones || ""
+   }));
+   const ws = XLSX.utils.json_to_sheet(datos);
+   const wb = XLSX.utils.book_new();
+   XLSX.utils.book_append_sheet(wb, ws, "Operaciones");
+   const fecha = new Date().toISOString().split('T')[0];
+   XLSX.writeFile(wb, "control_logistico_" + fecha + ".xlsx");
+   mostrarAlerta("Archivo descargado correctamente", "success");
+ } catch (e) {
+   console.error(e);
+   mostrarAlerta("Error al exportar: " + e.message, "error");
+ }
 }
 
 window.onload=cargar;
@@ -484,5 +753,3 @@ setInterval(cargar,15000);
 
 </body>
 </html>
-
-
