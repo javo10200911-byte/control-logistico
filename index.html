@@ -223,6 +223,22 @@ tbody tr:hover{
 </div>
 
 <div class="card">
+ <h2>🔎 Filtros de búsqueda</h2>
+
+<div class="grid">
+  <input id="f-fecha" type="date">
+  <input id="f-transportadora" placeholder="Transportadora">
+  <input id="f-conductor" placeholder="Conductor">
+  <input id="f-placa" placeholder="Placa">
+  <input id="f-producto" placeholder="Producto">
+</div>
+
+<div class="buttons">
+  <button class="secondary" onclick="aplicarFiltros()">🔍 Aplicar filtros</button>
+  <button class="danger" onclick="limpiarFiltros()">🧹 Limpiar filtros</button>
+</div>
+</div>
+<div class="card"> 
 <h2>📋 Historial de operaciones</h2>
 
 <table>
@@ -468,4 +484,5 @@ setInterval(cargar,15000);
 
 </body>
 </html>
+
 
