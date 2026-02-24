@@ -520,7 +520,7 @@ const finDisabled = r.Fin ? "disabled" : "";
     id="fin-${i}" 
     type="time" 
     value="${finFormateado}" 
-    onchange="actualizarFin(${indexReal},this.value)" 
+    oninput="actualizarFin(${indexReal},this.value)"
     ${finDisabled}
   >
 </td>
@@ -794,3 +794,4 @@ setInterval(() => {
 
 </body>
 </html>
+
