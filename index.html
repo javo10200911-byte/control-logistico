@@ -494,7 +494,16 @@ data.forEach((r,i)=>{
     d.Inicio === r.Inicio
   );
  const tiempoCalculado = (r.Tiempo && r.Tiempo.includes("HH")) ? r.Tiempo : calcularTiempo(r.Inicio || "", r.Fin || "");
- const finDisabled = r.Fin ? "disabled" : "";
+ let finFormateado = "";
+
+if (r.Fin) {
+  const partes = r.Fin.split(":");
+  const h = partes[0].padStart(2,"0");
+  const m = partes[1].padStart(2,"0");
+  finFormateado = `${h}:${m}`;
+}
+
+const finDisabled = r.Fin ? "disabled" : "";
  const obsValue = contentidoTextareas[i] !== undefined ? contentidoTextareas[i] : (r.Observaciones || "");
  html+=`
 <tr>
@@ -506,7 +515,15 @@ data.forEach((r,i)=>{
 <td>${r.Producto||""}</td>
 <td>${r.Operacion||""}</td>
 <td>${r.Inicio||""}</td>
-<td><input id="fin-${i}" type="time" value="${r.Fin||""}" onchange="actualizarFin(${indexReal},this.value)" ${finDisabled}></td>
+<td>
+  <input 
+    id="fin-${i}" 
+    type="time" 
+    value="${finFormateado}" 
+    onchange="actualizarFin(${indexReal},this.value)" 
+    ${finDisabled}
+  >
+</td>
 <td id="tiempo-${i}">${tiempoCalculado}</td>
 <td>${r.Muelle||""}</td>
 <td>${r.Responsable||""}</td>
@@ -610,11 +627,20 @@ function actualizarFin(i,fin){
    return;
  }
  
- if (inicio && fin <= inicio) {
-   mostrarAlerta("⚠️ La hora de fin debe ser posterior a la hora de inicio", "error");
-   document.getElementById("fin-"+i).value = "";
-   return;
- }
+ if (inicio) {
+   const [h1, m1] = inicio.split(':').map(Number);
+   const [h2, m2] = fin.split(':').map(Number);
+
+   const minInicio = h1 * 60 + m1;
+   const minFin = h2 * 60 + m2;
+
+   // Solo bloquear si es exactamente igual
+   if (minInicio === minFin) {
+      mostrarAlerta("⚠️ La hora de fin no puede ser igual a la hora de inicio", "error");
+      document.getElementById("fin-"+i).value = "";
+      return;
+   }
+}
  
  const tiempo = calcularTiempo(inicio, fin);
  const tiempoElem = document.getElementById("tiempo-"+i);
